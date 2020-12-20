@@ -1163,8 +1163,8 @@ implicit none
 
 integer::qunit, ierror
 
-call flush(qunit,ierror) ! F90=f95 (NAG)
-!call flush(qunit)   ! OS=Linux, SunOS, UNICOS, T3E, Fujitsu
+!call flush(qunit,ierror) ! F90=f95 (NAG)
+call flush(qunit)   ! OS=Linux, SunOS, UNICOS, T3E, Fujitsu
 !call flush_(qunit)  ! OS=AIX, F90=xlf
 
 ! no flush on Linux IA64 with Intel compiler

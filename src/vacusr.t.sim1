@@ -120,7 +120,7 @@ integer:: singl
 integer:: ix_1,ix_2,idim, ix^L
 
 !*****************
-double precision:: t01,t02,a1,a2,s1,s2,sf,xc1,xc2,rad,rfc,sdep,tdep,sigma2
+double precision:: t01,t02,a1,a2,s1,s2,sf
 
 
 !-----------------------------------------------------------------------------
