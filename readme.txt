@@ -1,4 +1,4 @@
-
+2D version openmp enabled
 
 Compile, Run and visualise results for the Orszag-Tang Test
 
