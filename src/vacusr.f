@@ -17,9 +17,9 @@
 !
 !    de/dt += Sum_i m_i*eqpar(grav0_+i)
 !
-!    The eqpar(grav1_),eqpar(grav2_),... coefficients are the components of
+!    The eqpar(grav1_),eqpar(grav2_),... coefficients are the components of 
 !    the gravitational acceleration in each dimension. Set them to 0 for no
-!    gravity in that direction.
+!    gravity in that direction. 
 !    The !!! comments show how a grav array could be used for a spatially
 !    (and maybe temporally) varying gravitational field.
 !    The setgrav subroutine has to be completed then.
@@ -28,7 +28,7 @@
 subroutine addsource_grav(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
    ixOmax1,ixOmax2,iws,qtC,w,qt,wnew)
 
-! Add gravity source calculated from w to wnew within ixO for all variables
+! Add gravity source calculated from w to wnew within ixO for all variables 
 ! in iws. w is at time qtC, wnew is advanced from qt to qt+qdt.
 
 include 'vacdef.f'
@@ -92,7 +92,7 @@ end
 !=============================================================================
 !!! subroutine setgrav(w,ixI^L,ixO^L,grav)
 
-! Set the gravitational acceleration within ixO based on x(ixI,ndim)
+! Set the gravitational acceleration within ixO based on x(ixI,ndim) 
 ! and/or w(ixI,nw)
 
 !!! include 'vacdef.f'
@@ -156,7 +156,7 @@ end
 SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
    ixOmax1,ixOmax2,iws,qtC,w,qt,wnew)
 
-  ! Add viscosity source to wnew within ixO
+  ! Add viscosity source to wnew within ixO 
 
   INCLUDE 'vacdef.f'
 
@@ -198,7 +198,7 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
 
   !-----------------------------------------------------------------------------
 
-  ! Calculating viscosity sources
+  ! Calculating viscosity sources 
   ! involves second derivatives, two extra layers
   CALL ensurebound(2,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,ixOmax1,&
      ixOmax2,qtC,w)
@@ -210,11 +210,11 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
   DO idim=1,ndim
      tmp(ixImin1:ixImax1,ixImin2:ixImax2)=w(ixImin1:ixImax1,ixImin2:ixImax2,&
         rho_)
-     CALL setnu(w,rho_,idim,ixOmin1,ixOmin2,ixOmax1,ixOmax2,nuR,nuL)
+     CALL setnu(w,rho_,idim,ixOmin1,ixOmin2,ixOmax1,ixOmax2,nuR,nuL)      
      CALL gradient1L(tmp,ixmin1,ixmin2,ixmax1,ixmax2,idim,tmp2)
      tmpL(ixImin1:ixImax1,ixImin2:ixImax2)=(nuL(ixImin1:ixImax1,&
         ixImin2:ixImax2)+nushk(ixImin1:ixImax1,ixImin2:ixImax2,idim))&
-        *tmp2(ixImin1:ixImax1,ixImin2:ixImax2)
+        *tmp2(ixImin1:ixImax1,ixImin2:ixImax2)          
      CALL gradient1R(tmp,ixmin1,ixmin2,ixmax1,ixmax2,idim,tmp2)
      tmpR(ixImin1:ixImax1,ixImin2:ixImax2)=(nuR(ixImin1:ixImax1,&
         ixImin2:ixImax2)+nushk(ixImin1:ixImax1,ixImin2:ixImax2,idim))&
@@ -233,11 +233,11 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
         ixImin2:ixImax2,m1_)**2+w(ixImin1:ixImax1,ixImin2:ixImax2,m2_)**2)&
         /(w(ixImin1:ixImax1,ixImin2:ixImax2,rho_)+w(ixImin1:ixImax1,&
         ixImin2:ixImax2,rhob_)))
-     CALL setnu(w,173,idim,ixOmin1,ixOmin2,ixOmax1,ixOmax2,nuR,nuL)
+     CALL setnu(w,173,idim,ixOmin1,ixOmin2,ixOmax1,ixOmax2,nuR,nuL)      
      CALL gradient1L(tmp,ixmin1,ixmin2,ixmax1,ixmax2,idim,tmp2)
      tmpL(ixImin1:ixImax1,ixImin2:ixImax2)=(nuL(ixImin1:ixImax1,&
         ixImin2:ixImax2)+nushk(ixImin1:ixImax1,ixImin2:ixImax2,idim))&
-        *tmp2(ixImin1:ixImax1,ixImin2:ixImax2)
+        *tmp2(ixImin1:ixImax1,ixImin2:ixImax2)      
      CALL gradient1R(tmp,ixmin1,ixmin2,ixmax1,ixmax2,idim,tmp2)
      tmpR(ixImin1:ixImax1,ixImin2:ixImax2)=(nuR(ixImin1:ixImax1,&
         ixImin2:ixImax2)+nushk(ixImin1:ixImax1,ixImin2:ixImax2,idim))&
@@ -258,7 +258,7 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
 
   DO k=1,ndim
      jxmin1=ixmin1+kr(k,1);jxmin2=ixmin2+kr(k,2);jxmax1=ixmax1+kr(k,1)
-     jxmax2=ixmax2+kr(k,2);
+     jxmax2=ixmax2+kr(k,2); 
      hxmin1=ixmin1-kr(k,1);hxmin2=ixmin2-kr(k,2);hxmax1=ixmax1-kr(k,1)
      hxmax2=ixmax2-kr(k,2);
      tmprhoL(ixmin1:ixmax1,ixmin2:ixmax2)=((w(ixmin1:ixmax1,ixmin2:ixmax2,&
@@ -269,7 +269,7 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
         ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_)))/two
 
      DO l=1,ndim
-        CALL setnu(w,l+m0_,k,ixOmin1,ixOmin2,ixOmax1,ixOmax2,nuR,nuL)
+        CALL setnu(w,l+m0_,k,ixOmin1,ixOmin2,ixOmax1,ixOmax2,nuR,nuL)      
         tmp(ixImin1:ixImax1,ixImin2:ixImax2)=w(ixImin1:ixImax1,&
            ixImin2:ixImax2,m0_+l)/(w(ixImin1:ixImax1,ixImin2:ixImax2,rho_)&
            +w(ixImin1:ixImax1,ixImin2:ixImax2,rhob_))
@@ -286,7 +286,7 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
 
 
 
-           IF (i .EQ. k) THEN
+           IF (i .EQ. k) THEN 
               tmpVL(ixmin1:ixmax1,ixmin2:ixmax2)=(w(ixmin1:ixmax1,&
                  ixmin2:ixmax2,m0_+ii0)+w(hxmin1:hxmax1,hxmin2:hxmax2,m0_&
                  +ii0))/two
@@ -301,7 +301,7 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
               CALL gradient1R(tmp,ixmin1,ixmin2,ixmax1,ixmax2,k,tmp2)
               tmpR(ixImin1:ixImax1,ixImin2:ixImax2)=(nuR(ixImin1:ixImax1,&
                  ixImin2:ixImax2)+nushk(ixImin1:ixImax1,ixImin2:ixImax2,k))&
-                 *tmp2(ixImin1:ixImax1,ixImin2:ixImax2)
+                 *tmp2(ixImin1:ixImax1,ixImin2:ixImax2) 
 
               tmp2(ixImin1:ixImax1,ixImin2:ixImax2)=(tmprhoR(ixImin1:ixImax1,&
                  ixImin2:ixImax2)*tmpR(ixImin1:ixImax1,ixImin2:ixImax2)&
@@ -373,7 +373,7 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
                  j=k
               ENDIF
 
-              IF (ii1 .EQ. 1) THEN
+              IF (ii1 .EQ. 1) THEN 
                  ii0=l    !ii0 is index B
                  m=k      !first derivative
                  sB=1.d0  !sign B
@@ -389,7 +389,7 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
               IF (m .EQ. k) THEN
 
                  jxmin1=ixmin1+kr(m,1);jxmin2=ixmin2+kr(m,2)
-                 jxmax1=ixmax1+kr(m,1);jxmax2=ixmax2+kr(m,2);
+                 jxmax1=ixmax1+kr(m,1);jxmax2=ixmax2+kr(m,2); 
                  hxmin1=ixmin1-kr(m,1);hxmin2=ixmin2-kr(m,2)
                  hxmax1=ixmax1-kr(m,1);hxmax2=ixmax2-kr(m,2);
                  tmpBL(ixmin1:ixmax1,ixmin2:ixmax2)=(w(ixmin1:ixmax1,&
@@ -407,7 +407,7 @@ SUBROUTINE addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
                     ixImin2:ixImax2))*tmp2(ixImin1:ixImax1,ixImin2:ixImax2)
                  CALL gradient1R(tmp,ixmin1,ixmin2,ixmax1,ixmax2,k,tmp2)
                  tmpR(ixImin1:ixImax1,ixImin2:ixImax2)=(nuR(ixImin1:ixImax1,&
-                    ixImin2:ixImax2))*tmp2(ixImin1:ixImax1,ixImin2:ixImax2)
+                    ixImin2:ixImax2))*tmp2(ixImin1:ixImax1,ixImin2:ixImax2) 
 
                  wnew(ixImin1:ixImax1,ixImin2:ixImax2,b0_+ii0)&
                     =wnew(ixImin1:ixImax1,ixImin2:ixImax2,b0_+ii0)&
@@ -471,7 +471,7 @@ END SUBROUTINE addsource_visc
 !=============================================================================
 SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
 
-  ! Set the viscosity coefficient nu within ixO based on w(ixI).
+  ! Set the viscosity coefficient nu within ixO based on w(ixI). 
 
   INCLUDE 'vacdef.f'
 
@@ -508,7 +508,7 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
 
   INTEGER:: ix,ixe
 
-
+  
 
   !----------------------------------------------------------------------------
 
@@ -517,7 +517,7 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
   CALL getcmax(new_cmax,w,ixmin1,ixmin2,ixmax1,ixmax2,idim,cmax)
   c_tot=MAXVAL(cmax(ixmin1:ixmax1,ixmin2:ixmax2))
 
-
+  
 
   !---------------------------------------------
   ! Set HyperVis coefficients here:
@@ -538,7 +538,7 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
   !---------------------------------------------
 
 
-  IF (iw .NE. 173) THEN
+  IF (iw .NE. 173) THEN     
      tmp_nu(ixGlo1:ixGhi1,ixGlo2:ixGhi2)=w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,iw)
      IF (iw.EQ.m1_.OR.iw.EQ.m2_) tmp_nu(ixGlo1:ixGhi1,ixGlo2:ixGhi2)&
         =w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,iw)/(w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,&
@@ -559,12 +559,12 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
   tmp_nuI(ixFlo1:ixFhi1,ixFlo2:ixFhi2)=tmp_nu(ixYlo1:ixYhi1,ixYlo2:ixYhi2)
 
 
+  
 
 
-
-  IF (iw .EQ. 173) THEN
-     iwc=e_
-  ELSE
+  IF (iw .EQ. 173) THEN 
+     iwc=e_ 
+  ELSE 
      iwc=iw
   ENDIF
 
@@ -578,7 +578,7 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
               tmp_nuI(ixFhi1+1,ixFlo2:ixFhi2)=tmp_nuI(ixFhi1-5,ixFlo2:ixFhi2)
                  CASE(2)
               tmp_nuI(ixFlo1:ixFhi1,ixFhi2+1)=tmp_nuI(ixFlo1:ixFhi1,ixFhi2-5)
-
+             
            END SELECT
 
         ELSE
@@ -588,7 +588,7 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
               tmp_nuI(ixFlo1-1,ixFlo2:ixFhi2)=tmp_nuI(ixFlo1+5,ixFlo2:ixFhi2)
                  CASE(2)
               tmp_nuI(ixFlo1:ixFhi1,ixFlo2-1)=tmp_nuI(ixFlo1:ixFhi1,ixFlo2+5)
-
+             
            END SELECT
 
         ENDIF
@@ -596,7 +596,7 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
 
   ENDDO
 
-  ixFmin1=ixFlo1+1;ixFmin2=ixFlo2+1;ixFmax1=ixFhi1-1;ixFmax2=ixFhi2-1;
+  ixFmin1=ixFlo1+1;ixFmin2=ixFlo2+1;ixFmax1=ixFhi1-1;ixFmax2=ixFhi2-1; 
 
   kxmin1=ixFmin1+2*kr(idim,1);kxmin2=ixFmin2+2*kr(idim,2)
   kxmax1=ixFmax1+2*kr(idim,1);kxmax2=ixFmax2+2*kr(idim,2); !5:66
@@ -635,7 +635,7 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
      nuR(ixmin1:ixmax1,ixmin2:ixmax2)=c_tot*c_hyp*md3R(ixmin1:ixmax1,&
         ixmin2:ixmax2)/md1R(ixmin1:ixmax1,ixmin2:ixmax2)*dx(ixmin1:ixmax1,&
         ixmin2:ixmax2,idim)
-  ELSEWHERE
+  ELSEWHERE 
      nuR(ixmin1:ixmax1,ixmin2:ixmax2)=0.d0
   END WHERE
 
@@ -649,7 +649,7 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
      -(tmp_nuI(jxmin1:jxmax1,jxmin2:jxmax2)-tmp_nuI(gxmin1:gxmax1,&
      gxmin2:gxmax2)))
   d1L(ixFFmin1:ixFFmax1,ixFFmin2:ixFFmax2)=ABS(tmp_nuI(ixFFmin1:ixFFmax1,&
-     ixFFmin2:ixFFmax2)-tmp_nuI(hxFFmin1:hxFFmax1,hxFFmin2:hxFFmax2))
+     ixFFmin2:ixFFmax2)-tmp_nuI(hxFFmin1:hxFFmax1,hxFFmin2:hxFFmax2))    
 
   DO ix_1=ixmin1,ixmax1
   DO ix_2=ixmin2,ixmax2
@@ -666,13 +666,13 @@ SUBROUTINE setnu(w,iw,idim,ixmin1,ixmin2,ixmax1,ixmax2,nuR,nuL)
      nuL(ixmin1:ixmax1,ixmin2:ixmax2)=c_tot*c_hyp*md3L(ixmin1:ixmax1,&
         ixmin2:ixmax2)/md1L(ixmin1:ixmax1,ixmin2:ixmax2)*dx(ixmin1:ixmax1,&
         ixmin2:ixmax2,idim)
-  ELSEWHERE
-     nuL(ixmin1:ixmax1,ixmin2:ixmax2)=0.d0
+  ELSEWHERE 
+     nuL(ixmin1:ixmax1,ixmin2:ixmax2)=0.d0  
   END WHERE
 
   maxviscoef=MAX(MAXVAL(nuL(ixmin1:ixmax1,ixmin2:ixmax2)), maxviscoef)
 
-
+  
 
   RETURN
 END SUBROUTINE setnu
@@ -760,7 +760,7 @@ SUBROUTINE getdt_visc(w,ixmin1,ixmin2,ixmax1,ixmax2)
         ixmin2:ixmax2,idim)) !/(w(ixmin1:ixmax1,ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_))   ! 1/dt
      dtdiff_visc=dtdiffpar/MAXVAL(tmpdt(ixmin1:ixmax1,ixmin2:ixmax2)&
         /(dx(ixmin1:ixmax1,ixmin2:ixmax2,idim)**2))
-
+     
      dt=MIN(dt,dtdiff_visc)
   END DO
 
@@ -802,7 +802,7 @@ SUBROUTINE gradient1(q,ixmin1,ixmin2,ixmax1,ixmax2,idim,gradq)
                     CASE(2)
                  gradq(ixmin1:ixmax1,ixmax2)=0.d0
                  gradq(ixmin1:ixmax1,maxx12)=0.d0
-
+                
               END SELECT
            ELSE
               SELECT CASE(idim)
@@ -812,7 +812,7 @@ SUBROUTINE gradient1(q,ixmin1,ixmin2,ixmax1,ixmax2,idim,gradq)
                     CASE(2)
                  gradq(ixmin1:ixmax1,ixmin2)=0.d0
                  gradq(ixmin1:ixmax1,minx12)=0.d0
-
+                
               END SELECT
            ENDIF
         ENDIF
@@ -856,7 +856,7 @@ SUBROUTINE gradient1L(q,ixmin1,ixmin2,ixmax1,ixmax2,idim,gradq)
                     CASE(2)
                  gradq(ixmin1:ixmax1,ixmax2)=0.d0
                  gradq(ixmin1:ixmax1,maxx12)=0.d0
-
+                
               END SELECT
            ELSE
               SELECT CASE(idim)
@@ -866,7 +866,7 @@ SUBROUTINE gradient1L(q,ixmin1,ixmin2,ixmax1,ixmax2,idim,gradq)
                     CASE(2)
                  gradq(ixmin1:ixmax1,ixmin2)=0.d0
                  gradq(ixmin1:ixmax1,minx12)=0.d0
-
+                
               END SELECT
            ENDIF
         ENDIF
@@ -909,7 +909,7 @@ SUBROUTINE gradient1R(q,ixmin1,ixmin2,ixmax1,ixmax2,idim,gradq)
                     CASE(2)
                  gradq(ixmin1:ixmax1,ixmax2)=0.d0
                  gradq(ixmin1:ixmax1,maxx12)=0.d0
-
+                
               END SELECT
            ELSE
               SELECT CASE(idim)
@@ -919,7 +919,7 @@ SUBROUTINE gradient1R(q,ixmin1,ixmin2,ixmax1,ixmax2,idim,gradq)
                     CASE(2)
                  gradq(ixmin1:ixmax1,ixmin2)=0.d0
                  gradq(ixmin1:ixmax1,minx12)=0.d0
-
+                
               END SELECT
            ENDIF
         ENDIF
@@ -930,13 +930,12 @@ SUBROUTINE gradient1R(q,ixmin1,ixmin2,ixmax1,ixmax2,idim,gradq)
   RETURN
 END SUBROUTINE gradient1R
 !INCLUDE:vacusr.diffusion.t
-
 !=============================================================================
 subroutine specialini(ixmin1,ixmin2,ixmax1,ixmax2,w)
 
 include 'vacdef.f'
 
-integer:: ixmin1,ixmin2,ixmax1,ixmax2
+integer:: ixmin1,ixmin2,ixmax1,ixmax2
 integer:: ix_1,ix_2,ix_3
 double precision:: w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,1:nw)
 
@@ -946,60 +945,65 @@ double precision:: onemor,inix,ddx
 double precision:: p_1,p_2
 
 integer:: iii_,iix_1,info,i,j
+!double precision:: pi,comi,eneu,sum,mode,bmax,l
 double precision:: comi,eneu,sum,mode,bmax,l
+
 character*79 atmfilename
 
-double precision:: p1,p2,rho1,rho2,v1,v2,T1,T2
+double precision:: p1,p2,rho1,rho2,v1,v2,T1,T2, b1_1,b1_2,b2_1,b2_2
+double precision:: vx,vz,bx,bz
 
 !-----------------------------------------------------------------------------
 
-p1=1.d0
-p2=0.1d0
-rho1=1.d0
-rho2=0.125d0
-v1=0.d0
-v2=0.d0
+p1=5.d0/12.d0/Pi
+rho1=25.d0/36.d0/Pi
+
+vx=1.d0
+vz=1.d0
+
+bx=1.d0/2.0/sqrt(Pi)
+bz=1.d0/2.0/sqrt(Pi)
+
+  w(ixmin1:ixmax1,ixmin2:ixmax2,rho_)=0.d0
+  w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_)=rho1
+  
+  w(ixmin1:ixmax1,ixmin2:ixmax2,m2_)=-vx*rho1*sin(2.d0*Pi*x(ixmin1:ixmax1,&
+     ixmin2:ixmax2,1)/x(ixmax1,10,1))
+  
+  w(ixmin1:ixmax1,ixmin2:ixmax2,m1_)=vz*rho1*sin(2.d0*Pi*x(ixmin1:ixmax1,&
+     ixmin2:ixmax2,2)/x(10,ixmax2,2))
+  
+  w(ixmin1:ixmax1,ixmin2:ixmax2,b2_)=-bx*sin(2.d0*Pi*x(ixmin1:ixmax1,&
+     ixmin2:ixmax2,1)/x(ixmax1,10,1))
+  w(ixmin1:ixmax1,ixmin2:ixmax2,b1_)=bz*sin(4.d0*Pi*x(ixmin1:ixmax1,&
+     ixmin2:ixmax2,2)/x(10,ixmax2,2))
+  
+  w(ixmin1:ixmax1,ixmin2:ixmax2,e_)=0.d0 
+  w(ixmin1:ixmax1,ixmin2:ixmax2,eb_)=p1/(eqpar(gamma_)-1.d0)
 
 
-do ix_1=ixGlo1,ixGhi1
- do ix_2=ixGlo2,ixGhi2
+!  w(ix^S,e_)=half*(^C&w(ix^S,m^C_)**2.d0+)/(w(ix^S,rho_)+w(ix^S,rhob_))
 
-if (ix_1 .lt. 252) then
-  w(ix_1,ix_2,rho_)=0.d0
-  w(ix_1,ix_2,e_)=0.d0
-  w(ix_1,ix_2,rhob_)=rho1
-  w(ix_1,ix_2,m2_)=0.d0
-  w(ix_1,ix_2,m1_)=v1*rho1
-  w(ix_1,ix_2,b2_)=1.d0
-  w(ix_1,ix_2,b1_)=0.75d0
-  w(ix_1,ix_2,eb_)=p1/(eqpar(gamma_)-1.d0)+half*(w(ix_1,ix_2,b1_)**2.d0&
-     +w(ix_1,ix_2,b2_)**2.d0)
-endif
+  w(ixmin1:ixmax1,ixmin2:ixmax2,eb_)=w(ixmin1:ixmax1,ixmin2:ixmax2,eb_)&
+     +half*((w(ixmin1:ixmax1,ixmin2:ixmax2,b1_)**2.d0+w(ixmin1:ixmax1,&
+     ixmin2:ixmax2,b2_)**2.d0))+half*(w(ixmin1:ixmax1,ixmin2:ixmax2,m1_)&
+     **2.d0+w(ixmin1:ixmax1,ixmin2:ixmax2,m2_)**2.d0)/(w(ixmin1:ixmax1,&
+     ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_))
 
-if (ix_1 .ge. 252) then
-  w(ix_1,ix_2,rho_)=0.d0
-  w(ix_1,ix_2,e_)=0.d0
-  w(ix_1,ix_2,rhob_)=rho2
-  w(ix_1,ix_2,m2_)=0.d0
-  w(ix_1,ix_2,m1_)=v2*rho2
-  w(ix_1,ix_2,b2_)=-1.d0
-  w(ix_1,ix_2,b1_)=0.75d0
-  w(ix_1,ix_2,eb_)=p2/(eqpar(gamma_)-1.d0)+half*(w(ix_1,ix_2,b1_)**2.d0&
-     +w(ix_1,ix_2,b2_)**2.d0)
-
-endif
-
- enddo
-enddo
 
   w(ixmin1:ixmax1,ixmin2:ixmax2,rho_)=w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_)
-  w(ixmin1:ixmax1,ixmin2:ixmax2,e_)=w(ixmin1:ixmax1,ixmin2:ixmax2,eb_)
   w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_)=0.d0
-  w(ixmin1:ixmax1,ixmin2:ixmax2,eb_)=0.d0
-!  w(ix^S,bg1_)=w(ix^S,b1_)
-!  w(ix^S,bg2_)=w(ix^S,b2_)
-  w(ixmin1:ixmax1,ixmin2:ixmax2,bg1_)=0.d0
+
+  w(ixmin1:ixmax1,ixmin2:ixmax2,e_)=w(ixmin1:ixmax1,ixmin2:ixmax2,eb_)
+  w(ixmin1:ixmax1,ixmin2:ixmax2,eb_)=0.d0 
+
   w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)=0.d0
+  w(ixmin1:ixmax1,ixmin2:ixmax2,bg1_)=0.d0
+  
+!  w(ix^S,bg2_)=w(ix^S,b2_)
+!  w(ix^S,b2_)=0.d0           
+!  w(ix^S,bg1_)=w(ix^S,b1_)
+!  w(ix^S,b1_)=0.d0
 
 
 return
@@ -1047,10 +1051,10 @@ integer:: ns
 integer:: singl
 !***************
 
-integer:: ix_1,ix_2,idim, ixmin1,ixmin2,ixmax1,ixmax2
+integer:: ix_1,ix_2,idim, ixmin1,ixmin2,ixmax1,ixmax2
 
 !*****************
-double precision:: t01,t02,a1,a2,s1,s2,sf
+!double precision:: t01,t02,a1,a2,s1,s2,sf,xc1,xc2,rad,rfc,sdep,tdep,sigma2
 
 
 !-----------------------------------------------------------------------------
@@ -1062,9 +1066,10 @@ eqpar(nu_)=1.d0
 
 
 
-if(abs(eqpar(nu_))>smalldouble)call addsource_visc(qdt,ixImin1,ixImin2,&
-   ixImax1,ixImax2,ixOmin1,ixOmin2,ixOmax1,ixOmax2,iws,qtC,wCT,qt,w)
-
+if(abs(eqpar(nu_))>smalldouble)&
+   call addsource_visc(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
+      ixOmax1,ixOmax2,iws,qtC,wCT,qt,w)
+ 
 !call addsource_grav(qdt,ixI^L,ixO^L,iws,qtC,wCT,qt,w)
 
 
@@ -1082,7 +1087,7 @@ include 'vacdef.f'
 
 
 
-integer:: iwmin,iwmax,idimmin,idimmax
+integer:: iwmin,iwmax,idimmin,idimmax
 double precision:: qt,w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,1:nw)
 integer:: ix,ix1,ix2,ixe,ixf,ixmin1,ixmin2,ixmax1,ixmax2,ixpairmin1,&
    ixpairmin2,ixpairmax1,ixpairmax2,idim,iw,iB
@@ -1108,14 +1113,16 @@ subroutine getdt_special(w,ixmin1,ixmin2,ixmax1,ixmax2)
 
 include 'vacdef.f'
 double precision:: w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw)
-integer:: ixmin1,ixmin2,ixmax1,ixmax2
+integer:: ixmin1,ixmin2,ixmax1,ixmax2
 !-----------------------------------------------------------------------------
 
 !call getdt_diff(w,ix^L)
 
 
-if(abs(eqpar(nu_))>smalldouble)call getdt_visc(w,ixmin1,ixmin2,ixmax1,ixmax2)
+if(abs(eqpar(nu_))>smalldouble)&
+   call getdt_visc(w,ixmin1,ixmin2,ixmax1,ixmax2)
 
+!call getdt_res(w,ix^L)
 
 !call getdt_grav(w,ix^L)
 
@@ -1124,13 +1131,14 @@ end
 
 
 subroutine specialeta(w,ixmin1,ixmin2,ixmax1,ixmax2,idirmin)
-
+ 
 include 'vacdef.f'
-
+ 
 double precision:: w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw)
 integer:: ixmin1,ixmin2,ixmax1,ixmax2,idirmin
 !-----------------------------------------------------------------------------
-
+ 
 stop 'specialeta is not defined'
+
 end
 

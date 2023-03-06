@@ -66,7 +66,7 @@ if(count==0)then
       call die('CT module is OFF: setvac -on=ct; make vac')
    endif
 else
-   ! Use the projection scheme
+   ! Use the projection scheme 
    call die('Poisson module is OFF: setvac -on=poisson;make vac')
 endif
 
@@ -168,20 +168,20 @@ if(oktest.and.iw==iwtest)write(*,*)'Getflux idim,w:',idim,w(ixtest1,ixtest2,&
 
 transport=.true.
 
-
+     
 select case(iw)
    case(rho_)
       f(ixmin1:ixmax1,ixmin2:ixmax2)=w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_)&
          *w(ixmin1:ixmax1,ixmin2:ixmax2,m0_+idim)/(w(ixmin1:ixmax1,&
          ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_))
-
+      
    case(m1_)
       if(idim==1)then
-
+            
           call getptotal(w,ixmin1,ixmin2,ixmax1,ixmax2,f)
 	  call getptotal_bg(w,ixmin1,ixmin2,ixmax1,ixmax2,fb)
           fb(ixmin1:ixmax1,ixmin2:ixmax2)=0.d0
-
+	  
           f(ixmin1:ixmax1,ixmin2:ixmax2)=f(ixmin1:ixmax1,ixmin2:ixmax2)&
              +fb(ixmin1:ixmax1,ixmin2:ixmax2)-(w(ixmin1:ixmax1,ixmin2:ixmax2,&
              b1_)*w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idim)+w(ixmin1:ixmax1,&
@@ -196,15 +196,15 @@ select case(iw)
                     w(ixmin1:ixmax1,ixmin2:ixmax2,b1_)*w(ixmin1:ixmax1,&
                        ixmin2:ixmax2,b0_+idim) !-&
 		 !-w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idim)*w(ixmin1:ixmax1,ixmin2:ixmax2,bg1_)  !remove for perturbed
-
-      endif
+ 
+      endif 
    case(m2_)
       if(idim==2)then
-
+            
           call getptotal(w,ixmin1,ixmin2,ixmax1,ixmax2,f)
 	  call getptotal_bg(w,ixmin1,ixmin2,ixmax1,ixmax2,fb)
           fb(ixmin1:ixmax1,ixmin2:ixmax2)=0.d0
-
+	  
           f(ixmin1:ixmax1,ixmin2:ixmax2)=f(ixmin1:ixmax1,ixmin2:ixmax2)&
              +fb(ixmin1:ixmax1,ixmin2:ixmax2)-(w(ixmin1:ixmax1,ixmin2:ixmax2,&
              b2_)*w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idim)+w(ixmin1:ixmax1,&
@@ -219,14 +219,14 @@ select case(iw)
                     w(ixmin1:ixmax1,ixmin2:ixmax2,b2_)*w(ixmin1:ixmax1,&
                        ixmin2:ixmax2,b0_+idim) !-&
 		 !-w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idim)*w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)  !remove for perturbed
-
-      endif
+ 
+      endif 
 
    case(e_)
-
+  
       call getptotal(w,ixmin1,ixmin2,ixmax1,ixmax2,f)
-      call getptotal_bg(w,ixmin1,ixmin2,ixmax1,ixmax2,fb)
-      fb(ixmin1:ixmax1,ixmin2:ixmax2)=0.d0
+      call getptotal_bg(w,ixmin1,ixmin2,ixmax1,ixmax2,fb)      
+      fb(ixmin1:ixmax1,ixmin2:ixmax2)=0.d0      
 
       f(ixmin1:ixmax1,ixmin2:ixmax2)=(w(ixmin1:ixmax1,ixmin2:ixmax2,m0_&
          +idim)*(f(ixmin1:ixmax1,ixmin2:ixmax2)+fb(ixmin1:ixmax1,&
@@ -237,7 +237,7 @@ select case(iw)
          bg0_+idim)*( (w(ixmin1:ixmax1,ixmin2:ixmax2,b1_))*w(ixmin1:ixmax1,&
          ixmin2:ixmax2,m1_)+(w(ixmin1:ixmax1,ixmin2:ixmax2,b2_))&
          *w(ixmin1:ixmax1,ixmin2:ixmax2,m2_) ))/(w(ixmin1:ixmax1,&
-         ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_))+&
+         ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_))+&        
               !  -w(ix^S,bg0_+idim)*( ^C&(w(ix^S,bg^C_))*w(ix^S,m^C_)+ )/(w(ix^S,rho_)+w(ix^S,rhob_))  ! remove for perturbed
                w(ixmin1:ixmax1,ixmin2:ixmax2,eb_)*w(ixmin1:ixmax1,&
                   ixmin2:ixmax2,m0_+idim)/(w(ixmin1:ixmax1,ixmin2:ixmax2,&
@@ -248,7 +248,7 @@ select case(iw)
                   ixmin2:ixmax2,b2_))*w(ixmin1:ixmax1,ixmin2:ixmax2,m2_) )&
                   /(w(ixmin1:ixmax1,ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,&
                   ixmin2:ixmax2,rhob_)) !
-
+              
 
 
    case(b1_)
@@ -256,7 +256,7 @@ select case(iw)
          f(ixmin1:ixmax1,ixmin2:ixmax2)= zero
          transport=.false.
       else
-
+      
          f(ixmin1:ixmax1,ixmin2:ixmax2)= -w(ixmin1:ixmax1,ixmin2:ixmax2,m1_)&
             /(w(ixmin1:ixmax1,ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,&
             ixmin2:ixmax2,rhob_))*(w(ixmin1:ixmax1,ixmin2:ixmax2,b0_+idim)&
@@ -264,14 +264,14 @@ select case(iw)
                   w(ixmin1:ixmax1,ixmin2:ixmax2,m0_+idim)/(w(ixmin1:ixmax1,&
                      ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,&
                      rhob_))*w(ixmin1:ixmax1,ixmin2:ixmax2,bg1_)
-
-      endif
+		  
+      endif  
    case(b2_)
       if(idim==2) then
          f(ixmin1:ixmax1,ixmin2:ixmax2)= zero
          transport=.false.
       else
-
+      
          f(ixmin1:ixmax1,ixmin2:ixmax2)= -w(ixmin1:ixmax1,ixmin2:ixmax2,m2_)&
             /(w(ixmin1:ixmax1,ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,&
             ixmin2:ixmax2,rhob_))*(w(ixmin1:ixmax1,ixmin2:ixmax2,b0_+idim)&
@@ -279,8 +279,8 @@ select case(iw)
                   w(ixmin1:ixmax1,ixmin2:ixmax2,m0_+idim)/(w(ixmin1:ixmax1,&
                      ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,&
                      rhob_))*w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)
-
-      endif
+		  
+      endif  
 
    case default
       call die('Error in getflux: unknown flow variable')
@@ -311,7 +311,7 @@ if(oktest)write(*,*)'Before adding source:',wnew(ixtest1,ixtest2,iwtest)
 
 ! Sources for resistivity in eqs. for e, B1, B2 and B3
 if(abs(eqpar(eta_))>smalldouble)then
-
+   
           write(*,*)'Error: Resistive MHD module is OFF'
    call die('Recompile with setvac -on=resist or set eqpar(eta_)=0')
 endif
@@ -330,7 +330,7 @@ end
 subroutine addsource_divb(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
    ixOmax1,ixOmax2,iws,qtC,w,qt,wnew)
 
-! Add Powell's divB related sources to wnew within ixO if possible,
+! Add Powell's divB related sources to wnew within ixO if possible, 
 ! otherwise shrink ixO
 
 include 'vacdef.f'
@@ -363,7 +363,7 @@ do iiw=1,iws(niw_); iw=iws(iiw)
             ixOmin2:ixOmax2,iw)-(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,b2_)&
             +w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,bg2_))*divb(ixOmin1:ixOmax1,&
             ixOmin2:ixOmax2)
-
+     
       case(b1_)
          wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
             ixOmin2:ixOmax2,iw)-w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m1_)&
@@ -374,7 +374,7 @@ do iiw=1,iws(niw_); iw=iws(iiw)
             ixOmin2:ixOmax2,iw)-w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m2_)&
             /(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,rho_)+w(ixOmin1:ixOmax1,&
             ixOmin2:ixOmax2,rhob_))*divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)
-
+     
       case(e_)
          wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
             ixOmin2:ixOmax2,iw)-(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m1_)&
@@ -435,8 +435,8 @@ if(toosmallp)then
          it
       write(*,*)'Value < smallp: ',minval(tmp(ixmin1:ixmax1,ixmin2:ixmax2)),&
          smallp
-!     write(*,*)'Location: ',minloc(tmp(ix^S)) !F77_
-
+!     write(*,*)'Location: ',minloc(tmp(ix^S)) !F77_  
+      
    endif
    if(smallp>zero)w(ixmin1:ixmax1,ixmin2:ixmax2,e_)=max(tmp(ixmin1:ixmax1,&
       ixmin2:ixmax2),smallp)/(eqpar(gamma_)-1)+half*((w(ixmin1:ixmax1,&

@@ -167,6 +167,16 @@ DOUBLE PRECISION:: maxviscoef
 
 ! end include vacdef
 !##############################################################################
+COMMON /INTE/ unitpar,nerror(nerrcode),kr(3,3),lvc(3,3,3),ixMmin1,ixMmin2,&
+   ixMmax1,ixMmax2,ixGmin1,ixGmin2,ixGmax1,ixGmax2,nx1,nx2,nx(ndim),dixBmin1,&
+   dixBmin2,dixBmax1,dixBmax2,nB,ixBmin(ndim,nhiB),ixBmax(ndim,nhiB),&
+   idimB(nhiB),ipairB(nhiB),slowsteps,nwimpl,nimpl,implrestart,implrestart2,&
+   impliter,impliternr,implmrpcpar,iw_full(niw_),iw_semi(niw_),iw_impl(niw_),&
+   iw_filter(niw_),iw_vector(nvector+1),vectoriw(nw),idimsplit,nproc(nfile&
+   +2),acmwidth,step,istep,nstep,it,itmin,itmax,nexpl,nnewton,niter,nmatvec,&
+   itsave(nsavehi,nfile),itsavelast(nfile),ditsave(nfile),isavet(nfile),&
+   isaveit(nfile),snapshotini,snapshotout,isaveout,ixtest1,ixtest2,ixtest3,&
+   iwtest,idimtest
 COMMON /CHAR/ typeB(nw,nhiB),typeBscalar(nhiB),typeimplinit,typeimpliter,&
    typeimplmat,typefull1,typepred1,typeimpl1,typefilter1,typelimited,typefct,&
    typetvd,typeaxial,typepoisson, typeconstrain,typelimiter(nw),&
@@ -186,16 +196,6 @@ COMMON /DOUB/ tmp(ixGlo1:ixGhi1,ixGlo2:ixGhi2),tmp2(ixGlo1:ixGhi1,&
    wold(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),residual,residmin,residmax,t,tmax,dt,&
    dtmin,cputimemax,tsave(nsavehi,nfile),tsavelast(nfile),dtsave(nfile),&
    maxviscoef
-COMMON /INTE/ unitpar,nerror(nerrcode),kr(3,3),lvc(3,3,3),ixMmin1,ixMmin2,&
-   ixMmax1,ixMmax2,ixGmin1,ixGmin2,ixGmax1,ixGmax2,nx1,nx2,nx(ndim),dixBmin1,&
-   dixBmin2,dixBmax1,dixBmax2,nB,ixBmin(ndim,nhiB),ixBmax(ndim,nhiB),&
-   idimB(nhiB),ipairB(nhiB),slowsteps,nwimpl,nimpl,implrestart,implrestart2,&
-   impliter,impliternr,implmrpcpar,iw_full(niw_),iw_semi(niw_),iw_impl(niw_),&
-   iw_filter(niw_),iw_vector(nvector+1),vectoriw(nw),idimsplit,nproc(nfile&
-   +2),acmwidth,step,istep,nstep,it,itmin,itmax,nexpl,nnewton,niter,nmatvec,&
-   itsave(nsavehi,nfile),itsavelast(nfile),ditsave(nfile),isavet(nfile),&
-   isaveit(nfile),snapshotini,snapshotout,isaveout,ixtest1,ixtest2,ixtest3,&
-   iwtest,idimtest
 COMMON /LOGI/ verbose,gencoord, polargrid,upperB(nhiB),fixedB(nw,nhiB),&
    nofluxB(nw,ndim),extraB,dtcantgrow,implconserv,implnewton,implcentered,&
    implnewmat,implpred,impl3level,impljacfast,implsource,dimsplit,sourcesplit,&

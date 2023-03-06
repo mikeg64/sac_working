@@ -4,7 +4,7 @@
 !=============================================================================
 program vac
 
-! Versatile Advection Code, (c) Gabor Toth. Started on Nov 8, 1994.
+! Versatile Advection Code, (c) Gabor Toth. Started on Nov 8, 1994. 
 
 include 'vacdef.f'                !declare common variables and parameters
 
@@ -17,13 +17,13 @@ double precision:: cputime
 !-----------------------------------------------------------------------------
 
 
-verbose=.true.
+verbose=.true. 
 if(verbose)then
    write(*,'(a)')'VAC 4.52 configured to'
    write(*,'(a)')'  -d=22 -phi=0 -z=0 -g=256,256 -p=mhd -u=sim1'
    write(*,'(a)')'  -on=cd,rk'
    write(*,'(a)')'  -off=mc,fct,tvdlf,tvd,impl,poisson,ct,gencoord,resist,mpi'
-
+   
 endif
 
   time0=cputime()
@@ -32,7 +32,7 @@ call physini                  ! Initialize physics dependent variables
 call readparameters(w)        ! Read filenames and parameters for advection
                               ! Read initial data, set ixM,ixG,gencoord
 
-
+       
 if(gencoord)then
    write(*,*) 'Error: input file contains general grid'
    write(*,*) 'Recompile vac after setvac -on=gencoord is set.'
@@ -41,7 +41,7 @@ endif
 call boundsetup               ! Initialize boundary data
 ! Initialize grid geometry
 if(gencoord)then
-
+   
           call die('Error: gencoord module is off')
 else
    call gridsetup1
@@ -75,12 +75,12 @@ do
    ! For slowsteps == 1, use dtpar in the first time step ONLY
    if(slowsteps==1.and.it==itmin)dtpar=-one
 
-   ! For slowsteps > 1, reduce dt for the first few steps
+   ! For slowsteps > 1, reduce dt for the first few steps 
    if(slowsteps>it-itmin+1) dt=dt*(one-(one-(it-itmin+one)/slowsteps)**2)
 
    if(tmaxexact)dt=min(dt,tmax-t+smalldouble)
 
-   ! Store w into wold for residual calculations and
+   ! Store w into wold for residual calculations and 
    ! for TVD limiting based on the previous time step.
    wold(ixGmin1:ixGmax1,ixGmin2:ixGmax2,1:nw)=w(ixGmin1:ixGmax1,&
       ixGmin2:ixGmax2,1:nw)
@@ -93,14 +93,14 @@ do
       residual=zero
       do iw=1,nw
          wnrm2=sum(w(ixMmin1:ixMmax1,ixMmin2:ixMmax2,iw)**2)
-
+         
          if(wnrm2<smalldouble)wnrm2=one
          residual = residual + sum((w(ixMmin1:ixMmax1,ixMmin2:ixMmax2,iw)&
             -wold(ixMmin1:ixMmax1,ixMmin2:ixMmax2,iw))**2)/wnrm2
       enddo
-
+      
       residual=sqrt(residual/nw)
-   endif
+   endif  
 
    it=it+1
    t=t+dt
@@ -191,7 +191,7 @@ do iw=1,nw
 end do
 ! It points to the 0-th component (iw_vector=m0_,b0_,...) for vector variables.
 ! Only the first ndim components of the vector variables are rotated in
-! generalized coordinates.
+! generalized coordinates. 
 ! qnvector is only used to avoid compiler warning when nvector=0
 
 qnvector=nvector
@@ -319,7 +319,7 @@ firstsweep=.true.
 if(dimsplit)then
    if((it/2)*2.eq.it .or. typedimsplit=='xy')then
       !If typedimsplit='xy', always do the sweeps in order of increasing idim,
-      !otherwise for even parity of "it" only, and reverse order for odd.
+      !otherwise for even parity of "it" only, and reverse order for odd. 
       do idimsplit=1,ndim
          lastsweep= idimsplit==ndim
          call advect(method,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimsplit,&
@@ -345,8 +345,8 @@ if(typefilter1/='nul')then
 
    ! Filter according to typefilter1
    select case(typefilter1)
-
-
+   
+   
    case default
       call die('Error in Advance: typefilter='//typefilter1//&
          ' is unknown or module is switched off!')
@@ -363,9 +363,9 @@ end
 
 !=============================================================================
 subroutine advect(method,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimmin,idimmax,w1,&
-   w)
+   w) 
 ! Process w if nproc/=0:   		call process
-! Add fluxes and unsplit sources in
+! Add fluxes and unsplit sources in 
 ! directions idim=idimmin..idimmax:	call advect1
 !
 ! Depending on typeadvance and implpar call advect1 several times
@@ -379,7 +379,7 @@ double precision:: w1(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),w(ixGlo1:ixGhi1,&
 
 ! For most Runge-Kutta type schemes one more full array is needed
 ! For classical RK4 another array is needed
-
+         
 double precision:: w2(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),w3(ixGlo1:ixGhi1,&
    ixGlo2:ixGhi2,nw)
 
@@ -395,7 +395,7 @@ oktest=index(teststr,'advect')>=1
 if(oktest)write(*,*)'Advect method w:',method,' ',w(ixtest1,ixtest2,iwtest)
 
 ! For negative "nproc(1)" call process, if positive check whether this is the
-! first sweep and if "it-itmin" is an integer multiple of "nproc(1)"
+! first sweep and if "it-itmin" is an integer multiple of "nproc(1)" 
 ! (the frequency of processing before the whole timestep)
 ! Processing is done in advance_impl for implicit methods
 if(nproc(1)/=0.and.implpar<=zero)then
@@ -419,9 +419,9 @@ case('twostep')
       idimmax,t     ,w,t,w1)
    call advect1(method   ,dt  ,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimmin,&
       idimmax,t+dt/2,w1,t,w)
-
+        
 case('threestep')
- !Shu-s third order method based on eq 2.15b of Yee II with signs corrected
+ !Shu-s third order method based on eq 2.15b of Yee II with signs corrected 
    call advect1(method,dt      ,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimmin,&
       idimmax,t     ,w ,t     ,w1)
    w2(ixmin1:ixmax1,ixmin2:ixmax2,1:nw)=3*quarter*w(ixmin1:ixmax1,&
@@ -433,7 +433,7 @@ case('threestep')
    call advect1(method,dt*two/3,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimmin,&
       idimmax,t+dt/2,w2,t+dt/3,w )
 
-
+        
 case('fourstep')
    ! Classical four step Runge-Kutta
    ! w1=w+Dt/2*k1
@@ -444,7 +444,7 @@ case('fourstep')
    call advect1(method,dt/2    ,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimmin,&
       idimmax,t+dt/2,w1,t,w2)
    ! w3=w+dt*k3
-   w3(ixmin1:ixmax1,ixmin2:ixmax2,1:nw)=w(ixmin1:ixmax1,ixmin2:ixmax2,1:nw)
+   w3(ixmin1:ixmax1,ixmin2:ixmax2,1:nw)=w(ixmin1:ixmax1,ixmin2:ixmax2,1:nw)   
    call advect1(method,dt      ,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimmin,&
       idimmax,t+dt/2,w2,t,w3)
    ! w1=(w1+2*w2+w3)/3=Dt*(k1+2*k2+2*k3)/6
@@ -458,7 +458,7 @@ case('fourstep')
    w(ixmin1:ixmax1,ixmin2:ixmax2,1:nw)=w(ixmin1:ixmax1,ixmin2:ixmax2,1:nw)&
       +w1(ixmin1:ixmax1,ixmin2:ixmax2,1:nw)
 
-
+        
 case('sterck')
    ! H. Sterck has this fourstep time integration, w2 is needed
    call advect1(method,dt*0.12,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimmin,&
@@ -472,7 +472,7 @@ case('sterck')
    call advect1(method,dt     ,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimmin,&
       idimmax,t+dt/2   ,w1,t,w )
 
-
+        
 case('jameson')
    ! Based on eq.2.15 of Yee II
    call advect1(method,dt/4,ixmin1,ixmin2,ixmax1,ixmax2,iws,idimmin,idimmax,&
@@ -528,8 +528,8 @@ if(oktest)write(*,*)'Advect1 istep,wCT,w:',istep,wCT(ixtest1,ixtest2,iwtest),&
    w(ixtest1,ixtest2,iwtest)
 
 ! In the first step wCT=w thus wCT is already processed if there is processing.
-! Otherwise for negative "nproc(2)" call process, if positive check whether
-! this is the first sweep and if "it-itmin" is an integer multiple of
+! Otherwise for negative "nproc(2)" call process, if positive check whether 
+! this is the first sweep and if "it-itmin" is an integer multiple of 
 ! "nproc(2)" (the frequency of processing before intermediate steps)
 ! No processing here for implicit methods
 if(istep>1.and.nproc(2)/=0.and.implpar<=zero)then
@@ -541,7 +541,7 @@ end if
 ixOmin1=ixImin1+2;ixOmin2=ixImin2+2;ixOmax1=ixImax1-2;ixOmax2=ixImax2-2;
 
 select case(method)
-
+        
 
 case('cd4')
    call centdiff4(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,ixOmax1,&
@@ -585,7 +585,7 @@ oktest=index(teststr,'addsource')>=1
 if(oktest)write(*,*)'Add Source qdt,wCT,w:',qdt,wCT(ixtest1,ixtest2,iwtest),&
    w(ixtest1,ixtest2,iwtest)
 
-! AddSource and SpecialSource may shrink ixO or expand ixI for derivatives
+! AddSource and SpecialSource may shrink ixO or expand ixI for derivatives 
 ixImin1=ixIImin1;ixImin2=ixIImin2;ixImax1=ixIImax1;ixImax2=ixIImax2
 ixOmin1=ixOOmin1;ixOmin2=ixOOmin2;ixOmax1=ixOOmax1;ixOmax2=ixOOmax2;
 
@@ -633,7 +633,7 @@ end
 !=============================================================================
 logical function timetosave(ifile)
 
-! Save times are defined by either tsave(isavet(ifile),ifile) or
+! Save times are defined by either tsave(isavet(ifile),ifile) or 
 ! itsave(isaveit(ifile),ifile) or dtsave(ifile) or ditsave(ifile)
 ! Other conditions may be included.
 
@@ -668,7 +668,7 @@ subroutine getdt_courant(w,ixmin1,ixmin2,ixmax1,ixmax2)
 
 ! Ensure that the courant conditions is met
 ! Calculate the time for the  maximum propagation speed cmax_i to cross dx_i
-! in each i directions then take minimum for all grid points in the mesh and
+! in each i directions then take minimum for all grid points in the mesh and 
 ! for all i directions, finally multiply by courantpar.
 !
 ! If TVD or TDLF provides dtcourant(idim) we take the minimum of those.
@@ -699,7 +699,7 @@ do idim=1,ndim
       dt=min(dt,dtcourant(idim))
       if(oktest) write(*,*)'idim,dtcourant(idim)',idim,dtcourant(idim)
    else
-      ! dx>0, but cmax>=0 may actually be 0, thus we calculate
+      ! dx>0, but cmax>=0 may actually be 0, thus we calculate 
       ! max(cmax/dx) rather than min(dx/cmax).
 
       call getcmax(new_cmax,w,ixmin1,ixmin2,ixmax1,ixmax2,idim,cmax)
@@ -724,7 +724,7 @@ if(courantmax>smalldouble) dt=min(dt,courantpar/courantmax)
 
 if(oktest) write(*,*)'GetDtCourant dt=',dt
 
-return
+return 
 end
 
 !=============================================================================
