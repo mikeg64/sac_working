@@ -19,7 +19,7 @@ include 'vacpar.f'
 
 INTEGER,PARAMETER:: ixGlo1=1,ixGlo2=1
 ! The next line is edited by SETVAC
-INTEGER,PARAMETER:: ixGhi1=800,ixGhi2=6,ixGhimin=6,ixGhimax=800
+INTEGER,PARAMETER:: ixGhi1=256,ixGhi2=256,ixGhimin=256,ixGhimax=256
 INTEGER,PARAMETER:: ndim=2, ndir=2
 
 INTEGER,PARAMETER:: dixBlo=2,dixBhi=2
@@ -167,12 +167,12 @@ DOUBLE PRECISION:: maxviscoef
 
 ! end include vacdef
 !##############################################################################
-COMMON /LOGI/ verbose,gencoord, polargrid,upperB(nhiB),fixedB(nw,nhiB),&
-   nofluxB(nw,ndim),extraB,dtcantgrow,implconserv,implnewton,implcentered,&
-   implnewmat,implpred,impl3level,impljacfast,implsource,dimsplit,sourcesplit,&
-   sourceunsplit,artcomp(nw),useprimitive,divbfix,divbwave,divbconstrain,&
-   angmomfix,compactres,smallfix,acmnolim, fourthorder,tmaxexact,fullgridini,&
-   fullgridout
+COMMON /CHAR/ typeB(nw,nhiB),typeBscalar(nhiB),typeimplinit,typeimpliter,&
+   typeimplmat,typefull1,typepred1,typeimpl1,typefilter1,typelimited,typefct,&
+   typetvd,typeaxial,typepoisson, typeconstrain,typelimiter(nw),&
+   typeentropy(nw),typeadvance, typedimsplit, typesourcesplit,filenameini,&
+   filenameout,filename(nfile),fileheadini,fileheadout,varnames,wnames,&
+   typefileini,typefileout,typefilelog,teststr
 COMMON /DOUB/ tmp(ixGlo1:ixGhi1,ixGlo2:ixGhi2),tmp2(ixGlo1:ixGhi1,&
    ixGlo2:ixGhi2),x(IXGlo1:IXGhi1,IXGlo2:IXGhi2,ndim),dx(IXGlo1:IXGhi1,&
    IXGlo2:IXGhi2,ndim),volume,dvolume(IXGlo1:IXGhi1,IXGlo2:IXGhi2),&
@@ -186,12 +186,6 @@ COMMON /DOUB/ tmp(ixGlo1:ixGhi1,ixGlo2:ixGhi2),tmp2(ixGlo1:ixGhi1,&
    wold(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),residual,residmin,residmax,t,tmax,dt,&
    dtmin,cputimemax,tsave(nsavehi,nfile),tsavelast(nfile),dtsave(nfile),&
    maxviscoef
-COMMON /CHAR/ typeB(nw,nhiB),typeBscalar(nhiB),typeimplinit,typeimpliter,&
-   typeimplmat,typefull1,typepred1,typeimpl1,typefilter1,typelimited,typefct,&
-   typetvd,typeaxial,typepoisson, typeconstrain,typelimiter(nw),&
-   typeentropy(nw),typeadvance, typedimsplit, typesourcesplit,filenameini,&
-   filenameout,filename(nfile),fileheadini,fileheadout,varnames,wnames,&
-   typefileini,typefileout,typefilelog,teststr
 COMMON /INTE/ unitpar,nerror(nerrcode),kr(3,3),lvc(3,3,3),ixMmin1,ixMmin2,&
    ixMmax1,ixMmax2,ixGmin1,ixGmin2,ixGmax1,ixGmax2,nx1,nx2,nx(ndim),dixBmin1,&
    dixBmin2,dixBmax1,dixBmax2,nB,ixBmin(ndim,nhiB),ixBmax(ndim,nhiB),&
@@ -202,3 +196,9 @@ COMMON /INTE/ unitpar,nerror(nerrcode),kr(3,3),lvc(3,3,3),ixMmin1,ixMmin2,&
    itsave(nsavehi,nfile),itsavelast(nfile),ditsave(nfile),isavet(nfile),&
    isaveit(nfile),snapshotini,snapshotout,isaveout,ixtest1,ixtest2,ixtest3,&
    iwtest,idimtest
+COMMON /LOGI/ verbose,gencoord, polargrid,upperB(nhiB),fixedB(nw,nhiB),&
+   nofluxB(nw,ndim),extraB,dtcantgrow,implconserv,implnewton,implcentered,&
+   implnewmat,implpred,impl3level,impljacfast,implsource,dimsplit,sourcesplit,&
+   sourceunsplit,artcomp(nw),useprimitive,divbfix,divbwave,divbconstrain,&
+   angmomfix,compactres,smallfix,acmnolim, fourthorder,tmaxexact,fullgridini,&
+   fullgridout
