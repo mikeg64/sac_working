@@ -1,3 +1,5 @@
+
+
 !##############################################################################
 ! module vacphys - mhd
 
@@ -156,6 +158,7 @@ subroutine getflux(w,ixmin1,ixmin2,ixmax1,ixmax2,iw,idim,f,transport)
 
 include 'vacdef.f'
 
+integer:: ix1,ix2
 integer::          ixmin1,ixmin2,ixmax1,ixmax2,iw,idim
 double precision:: w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),f(ixGlo1:ixGhi1,&
    ixGlo2:ixGhi2), fb(ixGlo1:ixGhi1,ixGlo2:ixGhi2)
@@ -171,10 +174,18 @@ transport=.true.
      
 select case(iw)
    case(rho_)
-      f(ixmin1:ixmax1,ixmin2:ixmax2)=w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_)&
-         *w(ixmin1:ixmax1,ixmin2:ixmax2,m0_+idim)/(w(ixmin1:ixmax1,&
-         ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_))
-      
+!      f(ixmin1:ixmax1,ixmin2:ixmax2)=w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_)&
+!         *w(ixmin1:ixmax1,ixmin2:ixmax2,m0_+idim)/(w(ixmin1:ixmax1,&
+!         ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_))
+      !$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+            f(ix1,ix2)=w(ix1,ix2,rhob_)&
+                *w(ix1,ix2,m0_+idim)/(w(ix1,&
+                ix2,rho_)+w(ix1,ix2,rhob_))
+       enddo
+      enddo
+      !$OMP ENDDO      
    case(m1_)
       if(idim==1)then
             
@@ -252,6 +263,7 @@ select case(iw)
 
 
    case(b1_)
+
       if(idim==1) then
          f(ixmin1:ixmax1,ixmin2:ixmax2)= zero
          transport=.false.
@@ -267,6 +279,8 @@ select case(iw)
 		  
       endif  
    case(b2_)
+   
+
       if(idim==2) then
          f(ixmin1:ixmax1,ixmin2:ixmax2)= zero
          transport=.false.

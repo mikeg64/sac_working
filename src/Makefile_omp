@@ -34,8 +34,8 @@ nothing	:
 
 ##### Nag F95 compiler (on a Linux box) #########################
 
-F77FLG=-ffixed-line-length-none  -ffree-form -fopenmp 		#no maximum line length
-F90FLG=-ffixed-line-length-none  -ffree-form -fopenmp		#no maximum line length
+F77FLG=-ffixed-line-length-none  -ffree-form -fopenmp -g 		#no maximum line length
+F90FLG=-ffixed-line-length-none  -ffree-form -fopenmp -g		#no maximum line length
 
 
 #F77=f95
@@ -663,8 +663,8 @@ roetest	:$(ROEOBJ)
 
 ###### Removing object files, precompiled Fortran files, and symbolic links
 
-#clean	:
-#	rm -f vac*$F roetest$F Vvac*$F vac*.d *$O *~
+clean	:
+	rm -f  *$O *~
 
 clean	:
 	rm -f  vac*.d *$O *~
