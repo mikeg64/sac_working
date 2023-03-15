@@ -1,6 +1,6 @@
 !##############################################################################
 ! include vacdef
-
+USE OMP_LIB
 IMPLICIT NONE
 
 !HPF$ PROCESSORS PP(NUMBER_OF_PROCESSORS())
@@ -26,7 +26,7 @@ INTEGER,PARAMETER:: dixBlo=2,dixBhi=2
 
  !Size of work array for VACPOISSON
 INTEGER,PARAMETER:: nhi=nw*ixGhi1*ixGhi2 !Maximum number of unknowns for VACIMPL
- 
+
 
 INTEGER,PARAMETER:: nhiB=10           ! maximum No. boundary sections
 
@@ -37,7 +37,7 @@ INTEGER,PARAMETER:: niw_=nw+1         !Indexname for size of iw index array
 
 INTEGER,PARAMETER:: filelog_=1,fileout_=2,nfile=2 ! outputfiles
 
-INTEGER,PARAMETER:: unitstdin=5,unitterm=6,uniterr=6,unitini=10 ! Unit names. 
+INTEGER,PARAMETER:: unitstdin=5,unitterm=6,uniterr=6,unitini=10 ! Unit names.
                                   ! Outputfiles use unitini+1..initini+nfile
                                   ! Default parfiles uses unitini-1
 
@@ -69,7 +69,7 @@ INTEGER:: unitpar
 ! Logical to set verbosity. For MPI parallel run only PE 0 is verbose
 LOGICAL:: verbose
 
-! General temporary arrays, any subroutine call may change them 
+! General temporary arrays, any subroutine call may change them
 ! except for subroutines which say the opposite in their header
 DOUBLE PRECISION:: tmp,tmp2
 
@@ -109,7 +109,7 @@ LOGICAL:: dtcantgrow
 INTEGER:: slowsteps
 
 ! Parameters for the implicit techniques
- 
+
 
 INTEGER:: nwimpl,nimpl
 DOUBLE PRECISION:: implpar,impldiffpar,implerror,implrelax,impldwlimit
@@ -140,7 +140,7 @@ INTEGER:: acmwidth
 !Previous time step and residuals
 DOUBLE PRECISION:: wold,residual,residmin,residmax
 
-! Flux storage for flux-CT and flux-CD methods !!! for MHD only !!! 
+! Flux storage for flux-CT and flux-CD methods !!! for MHD only !!!
 
 
 !Time parameters
@@ -177,12 +177,6 @@ COMMON /INTE/ unitpar,nerror(nerrcode),kr(3,3),lvc(3,3,3),ixMmin1,ixMmin2,&
    itsave(nsavehi,nfile),itsavelast(nfile),ditsave(nfile),isavet(nfile),&
    isaveit(nfile),snapshotini,snapshotout,isaveout,ixtest1,ixtest2,ixtest3,&
    iwtest,idimtest
-COMMON /CHAR/ typeB(nw,nhiB),typeBscalar(nhiB),typeimplinit,typeimpliter,&
-   typeimplmat,typefull1,typepred1,typeimpl1,typefilter1,typelimited,typefct,&
-   typetvd,typeaxial,typepoisson, typeconstrain,typelimiter(nw),&
-   typeentropy(nw),typeadvance, typedimsplit, typesourcesplit,filenameini,&
-   filenameout,filename(nfile),fileheadini,fileheadout,varnames,wnames,&
-   typefileini,typefileout,typefilelog,teststr
 COMMON /DOUB/ tmp(ixGlo1:ixGhi1,ixGlo2:ixGhi2),tmp2(ixGlo1:ixGhi1,&
    ixGlo2:ixGhi2),x(IXGlo1:IXGhi1,IXGlo2:IXGhi2,ndim),dx(IXGlo1:IXGhi1,&
    IXGlo2:IXGhi2,ndim),volume,dvolume(IXGlo1:IXGhi1,IXGlo2:IXGhi2),&
@@ -196,6 +190,12 @@ COMMON /DOUB/ tmp(ixGlo1:ixGhi1,ixGlo2:ixGhi2),tmp2(ixGlo1:ixGhi1,&
    wold(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),residual,residmin,residmax,t,tmax,dt,&
    dtmin,cputimemax,tsave(nsavehi,nfile),tsavelast(nfile),dtsave(nfile),&
    maxviscoef
+COMMON /CHAR/ typeB(nw,nhiB),typeBscalar(nhiB),typeimplinit,typeimpliter,&
+   typeimplmat,typefull1,typepred1,typeimpl1,typefilter1,typelimited,typefct,&
+   typetvd,typeaxial,typepoisson, typeconstrain,typelimiter(nw),&
+   typeentropy(nw),typeadvance, typedimsplit, typesourcesplit,filenameini,&
+   filenameout,filename(nfile),fileheadini,fileheadout,varnames,wnames,&
+   typefileini,typefileout,typefilelog,teststr
 COMMON /LOGI/ verbose,gencoord, polargrid,upperB(nhiB),fixedB(nw,nhiB),&
    nofluxB(nw,ndim),extraB,dtcantgrow,implconserv,implnewton,implcentered,&
    implnewmat,implpred,impl3level,impljacfast,implsource,dimsplit,sourcesplit,&

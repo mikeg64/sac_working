@@ -34,8 +34,8 @@ nothing	:
 
 ##### Nag F95 compiler (on a Linux box) #########################
 
-F77FLG=-ffixed-line-length-none  -ffree-form -fopenmp -g 		#no maximum line length
-F90FLG=-ffixed-line-length-none  -ffree-form -fopenmp -g		#no maximum line length
+F77FLG=-ffixed-line-length-none  -ffree-form  -g 		#no maximum line length
+F90FLG=-ffixed-line-length-none  -ffree-form  -g		#no maximum line length
 
 
 #F77=f95
@@ -338,8 +338,8 @@ PREFOR=$(F90TOF90)
 # If you compile VAC and VACINI with Fortran 77, you may want to set
 # FORFLGLIB explicitly (e.g. to -O4 or -fast) independent of F77FLAGS.
 #
- FORLIB=$(F77)
- FORFLGLIB=$(F77FLAGS)
+# FORLIB=$(F77)
+# FORFLGLIB=$(F77FLAGS)
 
 # Select these if you use a C compiler with Fortran to C translator
 # FORLIB=$(GCC)
@@ -543,8 +543,8 @@ roetest$F 							: $(PREPROC)
 $(VACOBJ) vacini$O vacall$O vaciniall$O vacsmall$O roetest$O	: $(INCLUDES)
 
 # General precompilation rule
-#.t$(F):
-#	$(VACPP) $< $(PREFOR) > $@
+.t$(F):
+	$(VACPP) $< $(PREFOR) > $@
 
 # General Fortran compilation rule
 $(F)$(O):
@@ -574,10 +574,10 @@ tridiag$O:	tridiag$(F7)
 
 # The "vacini" and "vac" targets use the default Fortran compiler
 vacini	:$(VACINIOBJ) $(MAKE_)
-	$(FOR) $(FORFLG) -o $(VACDIR)/vacini $(VACINIOBJ)
+	$(FOR) $(FORFLG) -fopenmp -o $(VACDIR)/vacini $(VACINIOBJ)
 
 vac	:$(VACOBJ) $(LIBS_) $(MAKE_)
-	$(FOR) $(FORFLG) -o $(VACDIR)/vac $(VACOBJ) $(LIBS)
+	$(FOR) $(FORFLG) -fopenmp -o $(VACDIR)/vac $(VACOBJ) $(LIBS)
 
 # The "vacini90" and "vac90" targets always use the Fortran 90 compiler
 vacini90:
@@ -663,8 +663,8 @@ roetest	:$(ROEOBJ)
 
 ###### Removing object files, precompiled Fortran files, and symbolic links
 
-clean	:
-	rm -f  *$O *~
+#clean	:
+#	rm -f vac*$F roetest$F Vvac*$F vac*.d *$O *~
 
 clean	:
 	rm -f  vac*.d *$O *~

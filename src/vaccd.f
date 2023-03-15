@@ -36,16 +36,6 @@ enddo
 if(ixImin1>ixmin1.or.ixImin2>ixmin2.or.ixImax1<ixmax1.or.ixImax2&
    <ixmax2) call die( 'Error in CentDiff4: Non-conforming input limits')
 
-w(ixmin1:ixmax1,ixmin2:ixmax2,b1_)=zero
-w(ixmin1:ixmax1,ixmin2:ixmax2,b2_)=zero
-w(ixmin1:ixmax1,ixmin2:ixmax2,bg1_)=zero
-w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)=zero
-
-wCT(ixmin1:ixmax1,ixmin2:ixmax2,b1_)=zero
-wCT(ixmin1:ixmax1,ixmin2:ixmax2,b2_)=zero
-wCT(ixmin1:ixmax1,ixmin2:ixmax2,bg1_)=zero
-wCT(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)=zero
-
 ! Add fluxes to w
 do idim= idimmin,idimmax
    ixmin1=ixOmin1-2*kr(idim,1);ixmin2=ixOmin2-2*kr(idim,2)
