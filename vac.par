@@ -1,23 +1,23 @@
 &testlist /
 
 &filelist
-	filenameini='configs/zero1_BW_asc.ini',
-	typefileini='ascii'
-	filename=   'results/zeroBW.log',
-		    'results/zeroBW.out'
-	typefileout='ascii'
+	filenameini='configs/zero1_ot_bin_256.ini',
+	typefileini='binary'
+	filename=   'results/zeroOT.log',
+		    'results/zeroOT.out'
+	typefileout='binary'
         fullgridout= T
         fullgridini= T
  /
 
 &savelist
-ditsave(1)=10
-ditsave(2)=10
+	itsave(1,2)=0
+	ditsave=1,100
 
  /
 
  &stoplist
-	itmax=50
+       itmax=101
  /
 
  &methodlist
@@ -32,15 +32,15 @@ ditsave(2)=10
  /
 
  &boundlist
-	typeB=	'contCD4','contCD4','contCD4','contCD4','contCD4','contCD4','fixed','fixed','fixed','fixed'
-		'contCD4','contCD4','contCD4','contCD4','contCD4','contCD4','fixed','fixed','fixed','fixed'
-		'contCD4','contCD4','contCD4','contCD4','contCD4','contCD4','fixed','fixed','fixed','fixed'
-		'contCD4','contCD4','contCD4','contCD4','contCD4','contCD4','fixed','fixed','fixed','fixed'
+	typeB=	'periodic','periodic','periodic','periodic','periodic','periodic','fixed','fixed','fixed','fixed'
+		'periodic','periodic','periodic','periodic','periodic','periodic','fixed','fixed','fixed','fixed'
+		'periodic','periodic','periodic','periodic','periodic','periodic','fixed','fixed','fixed','fixed'
+		'periodic','periodic','periodic','periodic','periodic','periodic','fixed','fixed','fixed','fixed'
 		
  /
 
  &paramlist
 	courantpar=0.2
-    dtpar=0.0000001
-    dtcantgrow=T
+        dtpar=0.0002
+        dtcantgrow=T
  /
