@@ -110,6 +110,7 @@ subroutine getdivb(w,ixOmin1,ixOmin2,ixOmax1,ixOmax2,divb)
 
 include 'vacdef.f'
 
+integer:: ix1,ix2
 integer::          ixOmin1,ixOmin2,ixOmax1,ixOmax2,ixmin1,ixmin2,ixmax1,&
    ixmax2,idim
 double precision:: w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),divb(ixGlo1:ixGhi1,&
@@ -124,15 +125,46 @@ if(fourthorder)then
 else
    ixmin1=ixOmin1-1;ixmin2=ixOmin2-1;ixmax1=ixOmax1+1;ixmax2=ixOmax2+1;
 endif
-divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)=zero
-do idim=1,ndim
-   tmp(ixmin1:ixmax1,ixmin2:ixmax2)=w(ixmin1:ixmax1,ixmin2:ixmax2,b0_+idim)&
-      +w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idim)
+!divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)=zero
+!$OMP DO
+      do ix1=ixOmin1,ixOmax1
+        do ix2=ixOmin2,ixOmax2
+           divb(ix1,ix2)=zero
+       enddo
+      enddo
+!$OMP ENDDO
 
+
+
+
+
+do idim=1,ndim
+!   tmp(ixmin1:ixmax1,ixmin2:ixmax2)=w(ixmin1:ixmax1,ixmin2:ixmax2,b0_+idim)&
+!      +w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idim)
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+            tmp(ix1,ix2)=w(ix1,ix2,b0_+idim)&
+                +w(ix1,ix2,bg0_+idim)
+       enddo
+      enddo
+!$OMP ENDDO
       call gradient4(.false.,tmp,ixOmin1,ixOmin2,ixOmax1,ixOmax2,idim,tmp2)
 
-   divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)=divb(ixOmin1:ixOmax1,&
-      ixOmin2:ixOmax2)+tmp2(ixOmin1:ixOmax1,ixOmin2:ixOmax2)
+!   divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)=divb(ixOmin1:ixOmax1,&
+!      ixOmin2:ixOmax2)+tmp2(ixOmin1:ixOmax1,ixOmin2:ixOmax2)
+
+!$OMP DO
+      do ix1=ixOmin1,ixOmax1
+        do ix2=ixOmin2,ixOmax2
+             divb(ix1,ix2)=divb(ix1,&
+      ix2)+tmp2(ix1,ix2)
+
+       enddo
+      enddo
+!$OMP ENDDO
+
+
 enddo
 
 if(oktest)then
@@ -167,13 +199,7 @@ oktest= index(teststr,'getflux')>=1
 if(oktest.and.iw==iwtest)write(*,*)'Getflux idim,w:',idim,w(ixtest1,ixtest2,&
    iwtest)
 
-!!$OMP DO
-!      do ix1=ixmin1,ixmax1
-!        do ix2=ixmin2,ixmax2
-!
-!       enddo
-!      enddo
-!      !$OMP ENDDO
+
 
 
 
@@ -511,6 +537,7 @@ subroutine addsource_divb(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
 
 include 'vacdef.f'
 
+integer:: ix1,ix2
 integer::          ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,ixOmax1,&
    ixOmax2,iws(niw_),iiw,iw
 double precision:: qdt,qtC,qt,w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),&
@@ -524,42 +551,114 @@ call ensurebound(1,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,ixOmax1,&
 
 ! We calculate now div B
 call getdivb(w,ixOmin1,ixOmin2,ixOmax1,ixOmax2,divb)
-divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)=qdt*divb(ixOmin1:ixOmax1,&
-   ixOmin2:ixOmax2)
+!divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)=qdt*divb(ixOmin1:ixOmax1,&
+!   ixOmin2:ixOmax2)
+
+!$OMP DO
+do ix1=ixOmin1,ixOmax1
+        do ix2=ixOmin2,ixOmax2
+            divb(ix1,ix2)=qdt*divb(ix1,ix2)
+       enddo
+enddo
+!$OMP ENDDO
+
 
 do iiw=1,iws(niw_); iw=iws(iiw)
    select case(iw)
       case(m1_)
-         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2,iw)-(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,b1_)&
-            +w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,bg1_))*divb(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2)
+!         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2,iw)-(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,b1_)&
+!            +w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,bg1_))*divb(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2)
+      !$OMP DO
+        do ix1=ixOmin1,ixOmax1
+            do ix2=ixOmin2,ixOmax2
+         wnew(ix1,ix2,iw)=wnew(ix1,&
+            ix2,iw)-(w(ix1,ix2,b1_)&
+            +w(ix1,ix2,bg1_))*divb(ix1,&
+            ix2)
+            enddo
+        enddo
+      !$OMP ENDDO
+
+
       case(m2_)
-         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2,iw)-(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,b2_)&
-            +w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,bg2_))*divb(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2)
+!         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2,iw)-(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,b2_)&
+!            +w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,bg2_))*divb(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2)
+      !$OMP DO
+        do ix1=ixOmin1,ixOmax1
+            do ix2=ixOmin2,ixOmax2
+         wnew(ix1,ix2,iw)=wnew(ix1,&
+            ix2,iw)-(w(ix1,ix2,b2_)&
+            +w(ix1,ix2,bg2_))*divb(ix1,&
+            ix2)
+            enddo
+        enddo
+      !$OMP ENDDO
+
+
 
       case(b1_)
-         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2,iw)-w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m1_)&
-            /(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,rho_)+w(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2,rhob_))*divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)
-      case(b2_)
-         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2,iw)-w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m2_)&
-            /(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,rho_)+w(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2,rhob_))*divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)
+!         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2,iw)-w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m1_)&
+!            /(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,rho_)+w(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2,rhob_))*divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)
+       !$OMP DO
+        do ix1=ixOmin1,ixOmax1
+            do ix2=ixOmin2,ixOmax2
+                wnew(ix1,ix2,iw)=wnew(ix1,&
+                ix2,iw)-w(ix1,ix2,m1_)&
+                /(w(ix1,ix2,rho_)+w(ix1,&
+                ix2,rhob_))*divb(ix1,ix2)
+            enddo
+        enddo
+      !$OMP ENDDO
 
+
+
+
+      case(b2_)
+!         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2,iw)-w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m2_)&
+!            /(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,rho_)+w(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2,rhob_))*divb(ixOmin1:ixOmax1,ixOmin2:ixOmax2)
+      !$OMP DO
+        do ix1=ixOmin1,ixOmax1
+            do ix2=ixOmin2,ixOmax2
+                wnew(ix1,ix2,iw)=wnew(ix1,&
+                    ix2,iw)-w(ix1,ix2,m2_)&
+                    /(w(ix1,ix2,rho_)+w(ix1,&
+                    ix2,rhob_))*divb(ix1,ix2)
+            enddo
+        enddo
+      !$OMP ENDDO
       case(e_)
-         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2,iw)-(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m1_)&
-            *(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,b1_)+w(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2,bg1_))+w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m2_)&
-            *(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,b2_)+w(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2,bg2_)) )/(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,rho_)&
-            +w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,rhob_))*divb(ixOmin1:ixOmax1,&
-            ixOmin2:ixOmax2)
+!         wnew(ixOmin1:ixOmax1,ixOmin2:ixOmax2,iw)=wnew(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2,iw)-(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m1_)&
+!            *(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,b1_)+w(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2,bg1_))+w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,m2_)&
+!            *(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,b2_)+w(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2,bg2_)) )/(w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,rho_)&
+!            +w(ixOmin1:ixOmax1,ixOmin2:ixOmax2,rhob_))*divb(ixOmin1:ixOmax1,&
+!            ixOmin2:ixOmax2)
+      !$OMP DO
+        do ix1=ixOmin1,ixOmax1
+            do ix2=ixOmin2,ixOmax2
+                wnew(ix1,ix2,iw)=wnew(ix1,&
+                ix2,iw)-(w(ix1,ix2,m1_)&
+                *(w(ix1,ix2,b1_)+w(ix1,&
+                ix2,bg1_))+w(ix1,ix2,m2_)&
+                *(w(ix1,ix2,b2_)+w(ix1,&
+                ix2,bg2_)) )/(w(ix1,ix2,rho_)&
+                +w(ix1,ix2,rhob_))*divb(ix1,&
+                ix2)
+            enddo
+        enddo
+      !$OMP ENDDO
+
+
    end select
 end do
 
@@ -583,8 +682,6 @@ integer::          ixmin1,ixmin2,ixmax1,ixmax2
 double precision:: w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw)
 logical:: toosmallp
 !-----------------------------------------------------------------------------
-
-
    ! Where rho is small use vacuum state: rho=vacuumrho, v=0, p=smallp, same B
    where((w(ixmin1:ixmax1,ixmin2:ixmax2,rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,&
       rhob_))<smallrho)
@@ -597,13 +694,9 @@ logical:: toosmallp
          +half*(w(ixmin1:ixmax1,ixmin2:ixmax2,b1_)**2+w(ixmin1:ixmax1,&
          ixmin2:ixmax2,b2_)**2)-w(ixmin1:ixmax1,ixmin2:ixmax2,eb_)
    endwhere
-
-
 ! Calculate pressure without clipping toosmall values (.false.)
 call getpthermal(w,ixmin1,ixmin2,ixmax1,ixmax2,tmp)
-
 toosmallp=any(tmp(ixmin1:ixmax1,ixmin2:ixmax2)<max(zero,smallp))
-
 if(toosmallp)then
    nerror(toosmallp_)=nerror(toosmallp_)+1
    if(nerror(toosmallp_)==1)then
@@ -612,7 +705,6 @@ if(toosmallp)then
       write(*,*)'Value < smallp: ',minval(tmp(ixmin1:ixmax1,ixmin2:ixmax2)),&
          smallp
 !     write(*,*)'Location: ',minloc(tmp(ix^S)) !F77_
-
    endif
    if(smallp>zero)w(ixmin1:ixmax1,ixmin2:ixmax2,e_)=max(tmp(ixmin1:ixmax1,&
       ixmin2:ixmax2),smallp)/(eqpar(gamma_)-1)+half*((w(ixmin1:ixmax1,&
@@ -621,6 +713,13 @@ if(toosmallp)then
       b1_)**2+w(ixmin1:ixmax1,ixmin2:ixmax2,b2_)**2))-w(ixmin1:ixmax1,&
       ixmin2:ixmax2,eb_)
 endif
+
+
+
+
+
+
+
 
 return
 end

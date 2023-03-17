@@ -7,9 +7,9 @@
 subroutine centdiff4(qdt,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
    ixOmax1,ixOmax2,iws,idimmin,idimmax,qtC,wCT,qt,w)
 
-! Advance the iws flow variables from t to t+qdt within ixO^L by 
-! fourth order centered  differencing in space the dw/dt+dF_i(w)/dx_i=S 
-! type equation. 
+! Advance the iws flow variables from t to t+qdt within ixO^L by
+! fourth order centered  differencing in space the dw/dt+dF_i(w)/dx_i=S
+! type equation.
 ! wCT contains the time centered variables at time qtC for flux and source.
 ! w is the old value at qt on input and the new value at qt+qdt on output.
 
@@ -20,7 +20,7 @@ double precision:: qdt,qtC,qt,wCT(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),&
 integer:: ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,ixOmax1,ixOmax2,&
    iws(niw_),idimmin,idimmax
 logical :: transport
-
+integer :: ix1,ix2
 double precision:: v(ixGlo1:ixGhi1,ixGlo2:ixGhi2),f(ixGlo1:ixGhi1,&
    ixGlo2:ixGhi2), fb(ixGlo1:ixGhi1,ixGlo2:ixGhi2)
 integer:: iiw,iw,ixmin1,ixmin2,ixmax1,ixmax2,idim,idir
@@ -48,37 +48,93 @@ do idim= idimmin,idimmax
       ! Get non-transported flux
       call getflux(wCT,ixmin1,ixmin2,ixmax1,ixmax2,iw,idim,f,transport)
 
+!!$OMP DO
+!      do ix1=ixOmin1,ixOmax1
+!        do ix2=ixOmin2,ixOmax2
+!
+!       enddo
+!      enddo
+!!$OMP ENDDO
+
+
+
+!f(ixmin1:ixmax1,ixmin2:ixmax2)=f(ixmin1:ixmax1,&
+!         ixmin2:ixmax2)+v(ixmin1:ixmax1,ixmin2:ixmax2)*wCT(ixmin1:ixmax1,&
+!         ixmin2:ixmax2,iw)
+
       ! Add transport flux
-      if(transport)f(ixmin1:ixmax1,ixmin2:ixmax2)=f(ixmin1:ixmax1,&
-         ixmin2:ixmax2)+v(ixmin1:ixmax1,ixmin2:ixmax2)*wCT(ixmin1:ixmax1,&
-         ixmin2:ixmax2,iw)
+      if(transport) then
+        !$OMP DO
+        do ix1=ixmin1,ixmax1
+            do ix2=ixmin2,ixmax2
+                f(ix1,ix2)=f(ix1,&
+                ix2)+v(ix1,ix2)*wCT(ix1,ix2,iw)
+            enddo
+        enddo
+        !$OMP ENDDO
+     endif
+
+
+
 
       ! Add divergence of flux
       call gradient4(.false.,f,ixOmin1,ixOmin2,ixOmax1,ixOmax2,idim,tmp)
-      w(ixmin1:ixmax1,ixmin2:ixmax2,iw)=w(ixmin1:ixmax1,ixmin2:ixmax2,iw)&
-         -qdt*tmp(ixmin1:ixmax1,ixmin2:ixmax2)
+!      w(ixmin1:ixmax1,ixmin2:ixmax2,iw)=w(ixmin1:ixmax1,ixmin2:ixmax2,iw)&
+!         -qdt*tmp(ixmin1:ixmax1,ixmin2:ixmax2)
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+              w(ix1,ix2,iw)=w(ix1,ix2,iw)&
+         -qdt*tmp(ix1,ix2)
+       enddo
+      enddo
+!$OMP ENDDO
+
+
+
 
    select case(iw)
 
     case(e_)
 
-         call gradient4(.false.,v,ixOmin1,ixOmin2,ixOmax1,ixOmax2,idim,tmp)   
+         call gradient4(.false.,v,ixOmin1,ixOmin2,ixOmax1,ixOmax2,idim,tmp)
          call getptotal_bg(w,ixmin1,ixmin2,ixmax1,ixmax2,fb)
-         
-         w(ixmin1:ixmax1,ixmin2:ixmax2,iw)=w(ixmin1:ixmax1,ixmin2:ixmax2,iw)&
-            -qdt*tmp(ixmin1:ixmax1,ixmin2:ixmax2)*fb(ixmin1:ixmax1,&
-            ixmin2:ixmax2)
-         
-        do idir= idimmin,idimmax 
+
+!         w(ixmin1:ixmax1,ixmin2:ixmax2,iw)=w(ixmin1:ixmax1,ixmin2:ixmax2,iw)&
+!            -qdt*tmp(ixmin1:ixmax1,ixmin2:ixmax2)*fb(ixmin1:ixmax1,&
+!            ixmin2:ixmax2)
+    !$OMP DO
+        do ix1=ixmin1,ixmax1
+            do ix2=ixmin2,ixmax2
+               w(ix1,ix2,iw)=w(ix1,ix2,iw)&
+            -qdt*tmp(ix1,ix2)*fb(ix1,ix2)
+            enddo
+        enddo
+    !$OMP ENDDO
+
+
+
+
+        do idir= idimmin,idimmax
              call gradient4(.false.,v,ixOmin1,ixOmin2,ixOmax1,ixOmax2,idir,&
-                tmp)   
-             w(ixmin1:ixmax1,ixmin2:ixmax2,iw)=w(ixmin1:ixmax1,ixmin2:ixmax2,&
-                iw)+qdt*w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idir)&
-                *w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idim)*tmp(ixmin1:ixmax1,&
-                ixmin2:ixmax2)
+                tmp)
+!             w(ixmin1:ixmax1,ixmin2:ixmax2,iw)=w(ixmin1:ixmax1,ixmin2:ixmax2,&
+!                iw)+qdt*w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idir)&
+!                *w(ixmin1:ixmax1,ixmin2:ixmax2,bg0_+idim)*tmp(ixmin1:ixmax1,&
+!                ixmin2:ixmax2)
+            !$OMP DO
+                do ix1=ixmin1,ixmax1
+                    do ix2=ixmin2,ixmax2
+                        w(ix1,ix2,iw)=w(ix1,ix2,&
+                        iw)+qdt*w(ix1,ix2,bg0_+idir)&
+                        *w(ix1,ix2,bg0_+idim)*tmp(ix1,ix2)
+                    enddo
+                enddo
+            !$OMP ENDDO
+
         enddo
 
-   endselect        
+   endselect
 
 
    end do    !next iw
