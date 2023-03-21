@@ -88,7 +88,7 @@ call getpthermal(w,ixmin1,ixmin2,ixmax1,ixmax2,tmp)
       do ix1=ixmin1,ixmax1
         do ix2=ixmin2,ixmax2
          w(ix1,ix2,p_)=tmp(ix1,ix2)
-       enddo
+        enddo
       enddo
 !$OMP ENDDO
 
@@ -344,28 +344,55 @@ include 'vacdef.f'
 double precision:: w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),p(ixGlo1:ixGhi1,&
    ixGlo2:ixGhi2)
 integer:: ixmin1,ixmin2,ixmax1,ixmax2
+integer:: ix1, ix2
 !-----------------------------------------------------------------------------
-!!$OMP DO
-!      do ix1=ixmin1,ixmax1
-!        do ix2=ixmin2,ixmax2
-!
-!       enddo
-!      enddo
-!!$OMP ENDDO
 
-p(ixmin1:ixmax1,ixmin2:ixmax2)=half*( w(ixmin1:ixmax1,ixmin2:ixmax2,m1_)**2&
-   +w(ixmin1:ixmax1,ixmin2:ixmax2,m2_)**2 )/(w(ixmin1:ixmax1,ixmin2:ixmax2,&
-   rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_))
 
-p(ixmin1:ixmax1,ixmin2:ixmax2)=p(ixmin1:ixmax1,ixmin2:ixmax2)&
-   + half*( (w(ixmin1:ixmax1,ixmin2:ixmax2,b1_)**2)+(w(ixmin1:ixmax1,&
-   ixmin2:ixmax2,b2_)**2) )+( (w(ixmin1:ixmax1,ixmin2:ixmax2,b1_)&
-   *w(ixmin1:ixmax1,ixmin2:ixmax2,bg1_))+(w(ixmin1:ixmax1,ixmin2:ixmax2,b2_)&
-   *w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)) )
+!p(ixmin1:ixmax1,ixmin2:ixmax2)=half*( w(ixmin1:ixmax1,ixmin2:ixmax2,m1_)**2&
+!   +w(ixmin1:ixmax1,ixmin2:ixmax2,m2_)**2 )/(w(ixmin1:ixmax1,ixmin2:ixmax2,&
+!   rho_)+w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_))
 
-p(ixmin1:ixmax1,ixmin2:ixmax2)=(eqpar(gamma_)-one)*(w(ixmin1:ixmax1,&
-   ixmin2:ixmax2,e_)-p(ixmin1:ixmax1,ixmin2:ixmax2))
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+            p(ix1,ix2)=half*( w(ix1,ix2,m1_)**2&
+            +w(ix1,ix2,m2_)**2 )/(w(ix1,ix2,&
+            rho_)+w(ix1,ix2,rhob_))
+       enddo
+      enddo
+!$OMP ENDDO
 
+
+
+!p(ixmin1:ixmax1,ixmin2:ixmax2)=p(ixmin1:ixmax1,ixmin2:ixmax2)&
+!   + half*( (w(ixmin1:ixmax1,ixmin2:ixmax2,b1_)**2)+(w(ixmin1:ixmax1,&
+!   ixmin2:ixmax2,b2_)**2) )+( (w(ixmin1:ixmax1,ixmin2:ixmax2,b1_)&
+!   *w(ixmin1:ixmax1,ixmin2:ixmax2,bg1_))+(w(ixmin1:ixmax1,ixmin2:ixmax2,b2_)&
+!   *w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)) )
+
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+            p(ix1,ix2)=p(ix1,ix2)&
+               + half*( (w(ix1,ix2,b1_)**2)+(w(ix1,&
+               ix2,b2_)**2) )+( (w(ix1,ix2,b1_)&
+               *w(ix1,ix2,bg1_))+(w(ix1,ix2,b2_)&
+               *w(ix1,ix2,bg2_)) )
+       enddo
+      enddo
+!$OMP ENDDO
+
+
+!p(ixmin1:ixmax1,ixmin2:ixmax2)=(eqpar(gamma_)-one)*(w(ixmin1:ixmax1,&
+!   ixmin2:ixmax2,e_)-p(ixmin1:ixmax1,ixmin2:ixmax2))
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+               p(ix1,ix2)=(eqpar(gamma_)-one)*(w(ix1,&
+           ix2,e_)-p(ix1,ix2))
+        enddo
+      enddo
+!$OMP ENDDO
 
 return
 end
@@ -378,6 +405,7 @@ include 'vacdef.f'
 double precision::  w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),p(ixGlo1:ixGhi1,&
    ixGlo2:ixGhi2),gamma
 integer:: ixmin1,ixmin2,ixmax1,ixmax2
+integer:: ix1, ix2
 !-----------------------------------------------------------------------------
 
 if(eqpar(gamma_)<=zero)call die&
@@ -385,15 +413,41 @@ if(eqpar(gamma_)<=zero)call die&
 
 gamma=eqpar(gamma_)
 
-p(ixmin1:ixmax1,ixmin2:ixmax2)=(gamma-two)*(( (w(ixmin1:ixmax1,ixmin2:ixmax2,&
-   b1_)*w(ixmin1:ixmax1,ixmin2:ixmax2,bg1_))+(w(ixmin1:ixmax1,ixmin2:ixmax2,&
-   b2_)*w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)) )+ half*( (w(ixmin1:ixmax1,&
-   ixmin2:ixmax2,b1_))**2.d0+(w(ixmin1:ixmax1,ixmin2:ixmax2,b2_))**2.d0 ))
+!p(ixmin1:ixmax1,ixmin2:ixmax2)=(gamma-two)*(( (w(ixmin1:ixmax1,ixmin2:ixmax2,&
+!   b1_)*w(ixmin1:ixmax1,ixmin2:ixmax2,bg1_))+(w(ixmin1:ixmax1,ixmin2:ixmax2,&
+!   b2_)*w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)) )+ half*( (w(ixmin1:ixmax1,&
+!   ixmin2:ixmax2,b1_))**2.d0+(w(ixmin1:ixmax1,ixmin2:ixmax2,b2_))**2.d0 ))
 
-p(ixmin1:ixmax1,ixmin2:ixmax2)=(gamma-one)*(w(ixmin1:ixmax1,ixmin2:ixmax2,e_)&
-   -half*( w(ixmin1:ixmax1,ixmin2:ixmax2,m1_)**2.d0+w(ixmin1:ixmax1,&
-   ixmin2:ixmax2,m2_)**2.d0 )/(w(ixmin1:ixmax1,ixmin2:ixmax2,rho_)&
-   +w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_)))-p(ixmin1:ixmax1,ixmin2:ixmax2)
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+            p(ix1,ix2)=(gamma-two)*(( (w(ix1,ix2,&
+               b1_)*w(ix1,ix2,bg1_))+(w(ix1,ix2,&
+               b2_)*w(ix1,ix2,bg2_)) )+ half*( (w(ix1,&
+               ix2,b1_))**2.d0+(w(ix1,ix2,b2_))**2.d0 ))
+        enddo
+      enddo
+!$OMP ENDDO
+
+
+
+
+!p(ixmin1:ixmax1,ixmin2:ixmax2)=(gamma-one)*(w(ixmin1:ixmax1,ixmin2:ixmax2,e_)&
+!   -half*( w(ixmin1:ixmax1,ixmin2:ixmax2,m1_)**2.d0+w(ixmin1:ixmax1,&
+!   ixmin2:ixmax2,m2_)**2.d0 )/(w(ixmin1:ixmax1,ixmin2:ixmax2,rho_)&
+!   +w(ixmin1:ixmax1,ixmin2:ixmax2,rhob_)))-p(ixmin1:ixmax1,ixmin2:ixmax2)
+
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+            p(ix1,ix2)=(gamma-one)*(w(ix1,ix2,e_)&
+               -half*( w(ix1,ix2,m1_)**2.d0+w(ix1,&
+               ix2,m2_)**2.d0 )/(w(ix1,ix2,rho_)&
+               +w(ix1,ix2,rhob_)))-p(ix1,ix2)
+        enddo
+      enddo
+!$OMP ENDDO
+
 
 
 return
@@ -407,6 +461,7 @@ include 'vacdef.f'
 double precision::  w(ixGlo1:ixGhi1,ixGlo2:ixGhi2,nw),p(ixGlo1:ixGhi1,&
    ixGlo2:ixGhi2),gamma
 integer:: ixmin1,ixmin2,ixmax1,ixmax2
+integer:: ix1, ix2
 !-----------------------------------------------------------------------------
 
 if(eqpar(gamma_)<=zero)call die&
@@ -414,10 +469,24 @@ if(eqpar(gamma_)<=zero)call die&
 
 gamma=eqpar(gamma_)
 
-p(ixmin1:ixmax1,ixmin2:ixmax2)=(eqpar(gamma_)-one)*w(ixmin1:ixmax1,&
-   ixmin2:ixmax2,eb_)-half*(eqpar(gamma_)-two)*( (w(ixmin1:ixmax1,&
-   ixmin2:ixmax2,bg1_)**2.d0)+(w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)&
-   **2.d0) )
+!p(ixmin1:ixmax1,ixmin2:ixmax2)=(eqpar(gamma_)-one)*w(ixmin1:ixmax1,&
+!   ixmin2:ixmax2,eb_)-half*(eqpar(gamma_)-two)*( (w(ixmin1:ixmax1,&
+!   ixmin2:ixmax2,bg1_)**2.d0)+(w(ixmin1:ixmax1,ixmin2:ixmax2,bg2_)&
+!   **2.d0) )
+
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+            p(ix1,ix2)=(eqpar(gamma_)-one)*w(ix1,&
+               ix2,eb_)-half*(eqpar(gamma_)-two)*( (w(ix1,&
+               ix2,bg1_)**2.d0)+(w(ix1,ix2,bg2_)&
+               **2.d0) )
+        enddo
+      enddo
+!$OMP ENDDO
+
+
+
 
 return
 end

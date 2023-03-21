@@ -12,7 +12,7 @@ subroutine boundsetup
 !
 !    iB=1..nB                                    - boundary ID
 !    ixBmin(idim,iB):ixBmax(idim,iD)             - location of boundary
-!    idimB(iB)                                   - direction orthogonal to the 
+!    idimB(iB)                                   - direction orthogonal to the
 !                                                  boundary layer
 !    upperB(iB)                                  - .true. if boundary is at a
 !                                                  high index of the phys. grid
@@ -29,7 +29,7 @@ if(oktest)write(*,*)'BoundSetup'
 
 ! If ixBmax(1,1)==0, the user did not specify boundary regions. Setup default.
 ! A schematic picture for ndim=2, where the numbers are iB for each region, and
-! *-s are the extra layers for qx. 
+! *-s are the extra layers for qx.
 !
 !                     ************
 !                     *1444444424*    ixGmax2
@@ -73,7 +73,7 @@ else
    do iB=1,nB
       ixmin1=ixBmin(1,iB);ixmin2=ixBmin(2,iB);ixmax1=ixBmax(1,iB)
       ixmax2=ixBmax(2,iB);
-      
+
       if(ixmin1<ixGmin1.or.ixmax1>ixGmax1.or.ixmin2<ixGmin2&
          .or.ixmax2>ixGmax2) then
          write(*,*)'Error for boundary region iB,ixL=',iB,ixmin1,ixmin2,&
@@ -88,7 +88,7 @@ else
          else
             if(ixmax1+1/=ixMmin1.or.ixmin1/=ixGmin1)write(*,*)&
                'Warning in BoundSetup: Boundary does not fit, iB:',iB
-         endif 
+         endif
       case(2)
          if(upperB(iB))then
             if(ixmin2-1/=ixMmax2.or.ixmax2/=ixGmax2)write(*,*)&
@@ -96,7 +96,7 @@ else
          else
             if(ixmax2+1/=ixMmin2.or.ixmin2/=ixGmin2)write(*,*)&
                'Warning in BoundSetup: Boundary does not fit, iB:',iB
-         endif 
+         endif
       end select
    end do
 end if
@@ -120,7 +120,7 @@ end do
 
 
 
-! symm0 means zero orthogonal flux via the boundary 
+! symm0 means zero orthogonal flux via the boundary
 do iw=1,nw
    do iB=1,nB
      if(typeB(iw,iB)=='symm0') nofluxB(iw,idimB(iB))=.true.
@@ -129,7 +129,7 @@ enddo
 
 if(oktest)then
    do iB=1,nB
-      
+
       write(unitterm,*)'iB,idimB,upperB,typeB:',iB,idimB(iB),upperB(iB),' ',&
          typeB(1,iB)
       write(unitterm,*)'ixBmin:',(ixBmin(idm,iB),idm=1,ndim)
@@ -148,7 +148,7 @@ subroutine ensurebound(dix,ixImin1,ixImin2,ixImax1,ixImax2,ixOmin1,ixOmin2,&
    ixOmax1,ixOmax2,qt,w)
 
 ! Check if there is enough information for calculating derivatives.
-! The requirement is that ixI is wider than ixO by dix. 
+! The requirement is that ixI is wider than ixO by dix.
 ! Adjust ixI and ixO. Call getboundary if needed.
 
 include 'vacdef.f'
@@ -223,7 +223,7 @@ do
    ixmin1=ixBmin(1,iB);ixmin2=ixBmin(2,iB);ixmax1=ixBmax(1,iB)
    ixmax2=ixBmax(2,iB);
 
-   ! The possibly shifted coordinates parallel to the boundary layer 
+   ! The possibly shifted coordinates parallel to the boundary layer
    ! are defined by the PAIR of the periodic/overlapping boundary.
    ! Put the location of the source of information into ixpairL.
    if(ipairB(iB)>0)then
@@ -236,14 +236,14 @@ do
          else
             ixpairmin1=ixpairmin1-dixBmin1;ixpairmax1=ixpairmax1-dixBmax1;
          endif
-      
+
       case(2)
          if(upperB(iB))then
             ixpairmin2=ixpairmin2+dixBmin2;ixpairmax2=ixpairmax2+dixBmax2;
          else
             ixpairmin2=ixpairmin2-dixBmin2;ixpairmax2=ixpairmax2-dixBmax2;
          endif
-      
+
       end select
    endif
 
@@ -260,7 +260,7 @@ do
 
             if(upperB(iB))then
 
-      	    
+
                ixe=ixmin1-2
 	       ixee=ixmin1-3
 
@@ -270,7 +270,7 @@ do
 
                ix= ixmax1
 		  w(ix,ixmin2:ixmax2,iw)=w(ixee,ixmin2:ixmax2,iw)
-	       
+
             else
                ixe=ixmax1+3
 	       ixee=ixmax1+2
@@ -281,7 +281,7 @@ do
 
                ix= ixmax1
 		  w(ix,ixmin2:ixmax2,iw)=w(ixee,ixmin2:ixmax2,iw)
-	       
+
             endif
 
 
@@ -289,7 +289,7 @@ do
 
             if(upperB(iB))then
 
-      	    
+
                ixe=ixmin2-2
 	       ixee=ixmin2-3
 
@@ -299,7 +299,7 @@ do
 
                ix= ixmax2
 		  w(ixmin1:ixmax1,ix,iw)=w(ixmin1:ixmax1,ixee,iw)
-	       
+
             else
                ixe=ixmax2+3
 	       ixee=ixmax2+2
@@ -310,11 +310,11 @@ do
 
                ix= ixmax2
 		  w(ixmin1:ixmax1,ix,iw)=w(ixmin1:ixmax1,ixee,iw)
-	       
+
             endif
 
 
-         
+
          end select
 
       case('zero')
@@ -322,99 +322,99 @@ do
          case(1)
 
             if(upperB(iB))then
-              
+
 	      call primitive(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)
-	      
+
                ixe=ixmin1-2
 	       ixee=ixmin1-3
 
 	       ixbmax1=ixmax1
 	       ixbmin1=ixee
-	       
-	                     
+
+
                !HPF$ INDEPENDENT
                ix= ixmin1
-	       
+
                   w(ix,ixmin2:ixmax2,iw)=w(ixe,ixmin2:ixmax2,iw)
 
                ix= ixmax1
 		  w(ix,ixmin2:ixmax2,iw)=w(ixee,ixmin2:ixmax2,iw)
-	       
-	      call conserve(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)	         
-	       
+
+	      call conserve(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)
+
            else
-	       
+
 	      call primitive(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)
-               
+
                ixe=ixmax1+3
 	       ixee=ixmax1+2
-	       
-       
+
+
                !HPF$ INDEPENDENT
                ix= ixmin1
                   w(ix,ixmin2:ixmax2,iw)=w(ixe,ixmin2:ixmax2,iw)
 
                ix= ixmax1
 		  w(ix,ixmin2:ixmax2,iw)=w(ixee,ixmin2:ixmax2,iw)
-	
 
-	      call conserve(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)	         	       
-	       
+
+	      call conserve(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)
+
             endif
-	
-   	
+
+
 
              case(2)
 
             if(upperB(iB))then
-              
+
 	      call primitive(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)
-	      
+
                ixe=ixmin2-2
 	       ixee=ixmin2-3
 
 	       ixbmax2=ixmax2
 	       ixbmin2=ixee
-	       
-	                     
+
+
                !HPF$ INDEPENDENT
                ix= ixmin2
-	       
+
                   w(ixmin1:ixmax1,ix,iw)=w(ixmin1:ixmax1,ixe,iw)
 
                ix= ixmax2
 		  w(ixmin1:ixmax1,ix,iw)=w(ixmin1:ixmax1,ixee,iw)
-	       
-	      call conserve(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)	         
-	       
+
+	      call conserve(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)
+
            else
-	       
+
 	      call primitive(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)
-               
+
                ixe=ixmax2+3
 	       ixee=ixmax2+2
-	       
-       
+
+
                !HPF$ INDEPENDENT
                ix= ixmin2
                   w(ixmin1:ixmax1,ix,iw)=w(ixmin1:ixmax1,ixe,iw)
 
                ix= ixmax2
 		  w(ixmin1:ixmax1,ix,iw)=w(ixmin1:ixmax1,ixee,iw)
-	
 
-	      call conserve(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)	         	       
-	       
+
+	      call conserve(ixGlo1,ixGlo2,ixGhi1,ixGhi2,w)
+
             endif
-	
-   	
 
-         
-          
-          
-          
+
+
+
+
+
+
          end select
-     
+
 
 
       case('cont','fixed')
@@ -434,13 +434,13 @@ do
          do ix2=ixmin2,ixmax2
                   w(ix1,ix2,iw)=fixB1(ix1-ixe,ix2,iw)
                enddo
-         enddo 
+         enddo
             else if(typeB(iw,iB)=='cont' .or. .not.fullgridini) then
                !HPF$ INDEPENDENT
                 do ix= ixmin1,ixmax1
                   w(ix,ixmin2:ixmax2,iw)=w(ixe,ixmin2:ixmax2,iw)
                end do
-            end if 
+            end if
          case(2)
             if(upperB(iB))then
                ixe=ixmin2-1
@@ -453,19 +453,19 @@ do
          do ix2=ixmin2,ixmax2
                   w(ix1,ix2,iw)=fixB2(ix1,ix2-ixe,iw)
                enddo
-         enddo 
+         enddo
             else if(typeB(iw,iB)=='cont' .or. .not.fullgridini) then
                !HPF$ INDEPENDENT
                 do ix= ixmin2,ixmax2
                   w(ixmin1:ixmax1,ix,iw)=w(ixmin1:ixmax1,ixe,iw)
                end do
-            end if 
+            end if
          end select
       case ('cont1','fixed1','grad1')
          ! First order extrapolation from edge and inner edge to the boundary
          ! 'cont1'  extrapolates in every time step, can be numericly unstable.
          ! 'fixed1' extrapolates first, stores VALUES into fixB, then restores.
-         ! 'grad1'  extrapolates first, stores DIFFERENCES into fixB, then 
+         ! 'grad1'  extrapolates first, stores DIFFERENCES into fixB, then
          !          adds the stored differences to the current edge value.
          select case(idim)
          case(1)
@@ -498,9 +498,9 @@ do
                do ix= ixmin1,ixmax1
                   w(ix,ixmin2:ixmax2,iw)=&
                      (abs(ix-ixe)+1)*w(ixe,ixmin2:ixmax2,iw)- &
-                      abs(ix-ixe)   *w(ixf,ixmin2:ixmax2,iw)  
+                      abs(ix-ixe)   *w(ixf,ixmin2:ixmax2,iw)
                end do
-            end if 
+            end if
          case(2)
             if(upperB(iB))then
                ixe=ixmin2-1; ixf=ixe-1
@@ -531,9 +531,9 @@ do
                do ix= ixmin2,ixmax2
                   w(ixmin1:ixmax1,ix,iw)=&
                      (abs(ix-ixe)+1)*w(ixmin1:ixmax1,ixe,iw)- &
-                      abs(ix-ixe)   *w(ixmin1:ixmax1,ixf,iw)  
+                      abs(ix-ixe)   *w(ixmin1:ixmax1,ixf,iw)
                end do
-            end if 
+            end if
          end select
       case('periodic')
          ! Update boundary by translation of w by width of mesh (and shift)
@@ -542,13 +542,13 @@ do
       case('symm','symm0','asymm')
          ! Reflect w into the boundary region, multiply by -1 for "asymm"
          ! In generalized coordinates take into account the other vector
-         ! components for vector variables. The symmetry of the transverse 
+         ! components for vector variables. The symmetry of the transverse
          ! component is based on typeB for the jdim=idim+1 -th component.
          ! ixe is used for the reflection, normal vectors are taken at ixf+1/2
          if(gencoord.and.vectoriw(iw)>=0)then
             ! Determine direction of vector component, symmetry coefficients
             ! for normal and transverse vector components
-            iwv=vectoriw(iw); jdim=idim+1-(idim/ndim)*ndim 
+            iwv=vectoriw(iw); jdim=idim+1-(idim/ndim)*ndim
             coeffnormal=1; if(typeB(iwv+idim,iB)=='asymm') coeffnormal=-1
             coefftransv=1; if(typeB(iwv+jdim,iB)=='asymm') coefftransv=-1
          endif
@@ -580,8 +580,8 @@ do
                end do
                if(typeB(iw,iB)=='asymm') w(ixmin1:ixmax1,ixmin2:ixmax2,iw)=&
                   -w(ixmin1:ixmax1,ixmin2:ixmax2,iw)
-            endif  
-         
+            endif
+
          case(2)
             if(upperB(iB))then
                ixe=2*ixmin2-1; ixf=ixmin2-1
@@ -609,13 +609,13 @@ do
                end do
                if(typeB(iw,iB)=='asymm') w(ixmin1:ixmax1,ixmin2:ixmax2,iw)=&
                   -w(ixmin1:ixmax1,ixmin2:ixmax2,iw)
-            endif  
-         
+            endif
+
          end select
       case('special')
             ! Skip special now, we do it after normal boundary type variables
             !HPF_ if(.false.)write(*,*)'Avoiding xlhpf90 compiler bug'
-      
+
       case default
          write(uniterr,*)'Error in GetBoundary: boundary type(', iw,iB,')=',&
             typeB(iw,iB),' is not implemented!'
@@ -664,7 +664,7 @@ if(.not.initialized)then
                      enddo
                enddo
                   endif
-               
+
                case(2)
                   if(upperB(iB))then
                      ixe=ixmin2-1
@@ -686,16 +686,16 @@ if(.not.initialized)then
                      enddo
                enddo
                   endif
-               
+
             end select
-         end if 
+         end if
       end do ! iw
    end do    ! iB
 end if
 
 if(oktest)write(*,*)'GetBoundary wnew:',w(ixtest1,ixtest2,iwtest)
 
-return 
+return
 end
 
 !=============================================================================
@@ -735,7 +735,7 @@ do iB=1,nB
              it,idim,iw,ixe,fLC(ixe,ixtest2)
          fLC(ixe,ixBmin2:ixBmax2)=zero
       endif
-      
+
       case(2)
       if(upperB(iB))then
          ixe=ixBmin2-1+ixRmin2-ixmin2
@@ -748,7 +748,7 @@ do iB=1,nB
              it,idim,iw,ixe,fLC(ixtest1,ixe)
          fLC(ixBmin1:ixBmax1,ixe)=zero
       endif
-      
+
       end select
    endif
 enddo
@@ -813,7 +813,7 @@ do idim=1,ndim
                    ixmin2:ixmax2,jdim)- &
                                       abs(ixe-ix) *qx(ixf,ixmin2:ixmax2,jdim)
             end do
-         end do 
+         end do
       case(2)
          ! First do the upper layers
          ixmax2=ixGmax2+1; ixmin2=ixMmax2+1
@@ -837,7 +837,7 @@ do idim=1,ndim
                    ixe,jdim)- &
                                       abs(ixe-ix) *qx(ixmin1:ixmax1,ixf,jdim)
             end do
-         end do 
+         end do
    end select
 enddo
 
@@ -883,28 +883,29 @@ endif
 volume=sum(dvolume(ixMmin1:ixMmax1,ixMmin2:ixMmax2))
 
 
-! For polar grid dx_phi=r*dphi. 
+! For polar grid dx_phi=r*dphi.
 if(polargrid)dx(ixGmin1:ixGmax1,ixGmin2:ixGmax2,pphi_)=x(ixGmin1:ixGmax1,&
    ixGmin2:ixGmax2,r_)*dx(ixGmin1:ixGmax1,ixGmin2:ixGmax2,pphi_)
 
 if(oktest)write(*,*)'Finish GridSetup1'
 
-return 
+return
 end
 
 !=============================================================================
- 
+
  subroutine gradient4(realgrad,q,ixmin1,ixmin2,ixmax1,ixmax2,idim,gradq)
  include 'vacdef.f'
  logical:: realgrad
  integer:: ixmin1,ixmin2,ixmax1,ixmax2,idim
+ integer:: ix1,ix2
  double precision:: q(ixGlo1:ixGhi1,ixGlo2:ixGhi2),gradq(ixGlo1:ixGhi1,&
     ixGlo2:ixGhi2)
  integer:: kxmin1,kxmin2,kxmax1,kxmax2,jxmin1,jxmin2,jxmax1,jxmax2,hxmin1,&
     hxmin2,hxmax1,hxmax2,gxmin1,gxmin2,gxmax1,gxmax2
  integer:: minx11,minx12,maxx11,maxx12,k
  !-----------------------------------------------------------------------------
- 
+
  !SHIFT
  kxmin1=ixmin1+2*kr(idim,1);kxmin2=ixmin2+2*kr(idim,2)
  kxmax1=ixmax1+2*kr(idim,1);kxmax2=ixmax2+2*kr(idim,2);
@@ -917,19 +918,72 @@ end
  !SHIFT MORE
  gxmin1=ixmin1-2*kr(idim,1);gxmin2=ixmin2-2*kr(idim,2)
  gxmax1=ixmax1-2*kr(idim,1);gxmax2=ixmax2-2*kr(idim,2);
- 
+
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+           gradq(ix1,ix2)=zero
+           tmp(ix1,ix2)=zero
+        enddo
+      enddo
+!$OMP ENDDO
+
+
  !SHIFT BEGIN
- gradq(ixmin1:ixmax1,ixmin2:ixmax2)=-(q(kxmin1:kxmax1,kxmin2:kxmax2)&
-    -8.D0*(q(jxmin1:jxmax1,jxmin2:jxmax2)-q(hxmin1:hxmax1,hxmin2:hxmax2))&
-    -q(gxmin1:gxmax1,gxmin2:gxmax2))/dx(ixmin1:ixmax1,ixmin2:ixmax2,idim)&
-    /12.D0
+ !gradq(ixmin1:ixmax1,ixmin2:ixmax2)=-(q(kxmin1:kxmax1,kxmin2:kxmax2)&
+ !   -8.D0*(q(jxmin1:jxmax1,jxmin2:jxmax2)-q(hxmin1:hxmax1,hxmin2:hxmax2))&
+ !   -q(gxmin1:gxmax1,gxmin2:gxmax2))/dx(ixmin1:ixmax1,ixmin2:ixmax2,idim)&
+ !   /12.D0
  !SHIFT END
- 
+
+ !$OMP DO
+      do ix1=kxmin1,kxmax1
+        do ix2=kxmin2,kxmax2
+           tmp(ix1,ix2)=q(ix1,ix2)
+        enddo
+      enddo
+!$OMP ENDDO
+
+!$OMP DO
+      do ix1=jxmin1,jxmax1
+        do ix2=jxmin2,jxmax2
+           tmp(ix1,ix2)=tmp(ix1,ix2)-8.D0*q(ix1,ix2)
+        enddo
+      enddo
+!$OMP ENDDO
+
+!$OMP DO
+      do ix1=hxmin1,hxmax1
+        do ix2=hxmin2,hxmax2
+           tmp(ix1,ix2)=tmp(ix1,ix2)+8.D0*q(ix1,ix2)
+        enddo
+      enddo
+!$OMP ENDDO
+
+ !$OMP DO
+      do ix1=gxmin1,gxmax1
+        do ix2=gxmin2,gxmax2
+           tmp(ix1,ix2)=tmp(ix1,ix2)-q(ix1,ix2)
+        enddo
+      enddo
+!$OMP ENDDO
+
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=kxmin2,ixmax2
+           gradq(ix1,ix2)=-tmp(ix1,ix2)/dx(ix1,ix2,idim)/12.D0
+        enddo
+      enddo
+!$OMP ENDDO
+
+
+
+
  minx11=ixmin1+kr(idim,1);minx12=ixmin2+kr(idim,2);
  maxx11=ixmax1-kr(idim,1);maxx12=ixmax2-kr(idim,2);
- 
+
  do k=0,1  !left-right bc
- 
+
  if (typeB(1,2*idim-1+k) .ne. 'mpi') then
  if (upperB(2*idim-1+k)) then
  select case(idim)
@@ -954,7 +1008,7 @@ end
  endif
  endif
  enddo
- 
+
  return
  end
 
@@ -970,6 +1024,7 @@ subroutine laplace4(q,ixmin1,ixmin2,ixmax1,ixmax2,laplaceq)
 
 include 'vacdef.f'
 
+integer:: ix1,ix2
 integer:: ixmin1,ixmin2,ixmax1,ixmax2
 double precision:: q(ixGlo1:ixGhi1,ixGlo2:ixGhi2),laplaceq(ixGlo1:ixGhi1,&
    ixGlo2:ixGhi2)
@@ -984,15 +1039,23 @@ if(typeaxial/='slab')call die&
 
 oktest= index(teststr,'lpalace')>=1
 
-laplaceq(ixmin1:ixmax1,ixmin2:ixmax2)=zero
+!laplaceq(ixmin1:ixmax1,ixmin2:ixmax2)=zero
+!$OMP DO
+      do ix1=ixmin1,ixmax1
+        do ix2=ixmin2,ixmax2
+           laplaceq(ix1,ix2)=zero
+           tmp(ix1,ix2)=zero
+        enddo
+      enddo
+!$OMP ENDDO
 
 do idim=1,ndim
    !SHIFT
    kxmin1=ixmin1+2*kr(idim,1);kxmin2=ixmin2+2*kr(idim,2)
-   kxmax1=ixmax1+2*kr(idim,1);kxmax2=ixmax2+2*kr(idim,2); 
+   kxmax1=ixmax1+2*kr(idim,1);kxmax2=ixmax2+2*kr(idim,2);
    !SHIFT MORE
    jxmin1=ixmin1+kr(idim,1);jxmin2=ixmin2+kr(idim,2);jxmax1=ixmax1+kr(idim,1)
-   jxmax2=ixmax2+kr(idim,2); 
+   jxmax2=ixmax2+kr(idim,2);
    !SHIFT MORE
    hxmin1=ixmin1-kr(idim,1);hxmin2=ixmin2-kr(idim,2);hxmax1=ixmax1-kr(idim,1)
    hxmax2=ixmax2-kr(idim,2);
@@ -1001,12 +1064,60 @@ do idim=1,ndim
    gxmax1=ixmax1-2*kr(idim,1);gxmax2=ixmax2-2*kr(idim,2);
 
    !SHIFT BEGIN
-   laplaceq(ixmin1:ixmax1,ixmin2:ixmax2)=laplaceq(ixmin1:ixmax1,&
-      ixmin2:ixmax2)+(q(kxmin1:kxmax1,kxmin2:kxmax2)+q(gxmin1:gxmax1,&
-      gxmin2:gxmax2)+30*q(ixmin1:ixmax1,ixmin2:ixmax2)-16*(q(jxmin1:jxmax1,&
-      jxmin2:jxmax2)+q(hxmin1:hxmax1,hxmin2:hxmax2)))/dx(ixmin1:ixmax1,&
-      ixmin2:ixmax2,idim)**2/12
+!   laplaceq(ixmin1:ixmax1,ixmin2:ixmax2)=laplaceq(ixmin1:ixmax1,&
+!      ixmin2:ixmax2)+(q(kxmin1:kxmax1,kxmin2:kxmax2)+q(gxmin1:gxmax1,&
+!      gxmin2:gxmax2)+30*q(ixmin1:ixmax1,ixmin2:ixmax2)-16*(q(jxmin1:jxmax1,&
+!      jxmin2:jxmax2)+q(hxmin1:hxmax1,hxmin2:hxmax2)))/dx(ixmin1:ixmax1,&
+!      ixmin2:ixmax2,idim)**2/12
    !SHIFT END
+
+
+
+    !$OMP DO
+          do ix1=kxmin1,kxmax1
+            do ix2=kxmin2,kxmax2
+                  tmp(ix1,ix2)=q(ix1,ix2)
+            enddo
+          enddo
+    !$OMP ENDDO
+
+    !$OMP DO
+          do ix1=jxmin1,jxmax1
+            do ix2=jxmin2,jxmax2
+                  tmp(ix1,ix2)=tmp(ix1,ix2)-16*q(ix1,ix2)
+            enddo
+          enddo
+    !$OMP ENDDO
+
+    !$OMP DO
+          do ix1=hxmin1,hxmax1
+            do ix2=hxmin2,hxmax2
+                  tmp(ix1,ix2)=tmp(ix1,ix2)-16*q(ix1,ix2)
+            enddo
+          enddo
+    !$OMP ENDDO
+
+
+
+    !$OMP DO
+          do ix1=gxmin1,gxmax1
+            do ix2=gxmin2,gxmax2
+                  laplaceq(ix1,ix2)=laplaceq(ix1,ix2)+q(ix1,ix2)
+            enddo
+          enddo
+    !$OMP ENDDO
+
+    !$OMP DO
+          do ix1=ixmin1,ixmax1
+            do ix2=ixmin2,ixmax2
+                  laplaceq(ix1,ix2)=&
+     ( tmp(ix1,ix2)+30*q(ix1,ix2))/dx(ix1,&
+      ix2,idim)**2/12
+            enddo
+          enddo
+    !$OMP ENDDO
+
+
 
    if(oktest)write(*,*)'idim,q(kx,jx,ix,hx,gx):',idim,q(ixtest1&
       +2*kr(idim,1),ixtest2+2*kr(idim,2)),q(ixtest1+kr(idim,1),ixtest2&
